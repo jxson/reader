@@ -1,0 +1,12 @@
+reader: refactors local Vanadium peer discovery.
+
+Cleans up discovery code and the way vanadium module calls are coupled
+to application state.
+
+* Skips example component test (until real ones can be
+added).
+* Updates make all to be silent on success.
+
+
+SEE: #3
+Change-Id: I4740a0d3d479c8ce784366b5a5c8ab5b7ffac58d
