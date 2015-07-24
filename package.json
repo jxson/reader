@@ -31,8 +31,11 @@
     "mercury": "^14.0.0",
     "ms": "^0.7.1",
     "prr": "^1.0.1",
+    "run-parallel": "^1.1.2",
+    "run-waterfall": "^1.1.2",
     "through2": "^2.0.0",
     "uuid": "^2.0.1",
+    "vanadium": "*",
     "xtend": "^4.0.0"
   }
 }
