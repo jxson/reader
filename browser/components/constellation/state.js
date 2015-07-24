@@ -15,11 +15,11 @@ module.exports = function create(options) {
   });
 
   return state;
-}
+};
 
 function peer(object, key) {
   return hg.struct({
     id: key,
     status: object.status || 'unkown',
-  })
+  });
 }

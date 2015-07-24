@@ -6,7 +6,6 @@ var debug = require('debug')('reader:vanadium');
 var window = require('global/window');
 var uuid = require('uuid');
 var waterfall = require('run-waterfall');
-var parallel = require('run-parallel');
 var vanadium = require('vanadium');
 var EventEmitter = require('events').EventEmitter;
 var service = require('./service');
@@ -70,7 +69,7 @@ Client.prototype.discover = function(callback) {
     }
 
     client.mounted = true;
-    callback()
+    callback();
   });
 };
 
@@ -100,7 +99,6 @@ Client.prototype.init = function(callback) {
 
 Client.prototype.serve = function(runtime, callback) {
   var client = this;
-  var peers = client.peers;
   var service = client.service;
   var server = runtime.newServer();
   var name = getName(runtime);
@@ -111,7 +109,7 @@ Client.prototype.serve = function(runtime, callback) {
 
   function onserve(err) {
     if (err) {
-      return callback(err)
+      return callback(err);
     }
 
     window.addEventListener = window.addEventListener || noop;
@@ -134,7 +132,7 @@ Client.prototype.serve = function(runtime, callback) {
     namespace.delete(context, name, true, noop);
     server.stop(noop);
   }
-}
+};
 
 Client.prototype.glob = function(runtime, onmount) {
   onmount = once(onmount);
@@ -142,26 +140,26 @@ Client.prototype.glob = function(runtime, onmount) {
   var client = this;
   var peers = client.peers;
   // Glob pattern based on "<prefix>/reader-example/:uuid"
-  var pattern = prefix(runtime) + '/*/*'
+  var pattern = prefix(runtime) + '/*/*';
   var stream = glob({
     name: client.name,
     runtime: runtime,
     pattern: pattern,
     timeout: ms('12s')
-  })
+  });
 
   stream.on('error', function(err) {
     debug('glob-stream error: %s', err.stack);
     client.emit('error', err);
-  })
+  });
 
   stream
   .pipe(filter(peers))
   .pipe(through(write))
   .on('error', function(err) {
-    debug('peer-stream error: %s', err.stack)
+    debug('peer-stream error: %s', err.stack);
     client.emit('error', err);
-  })
+  });
 
   function write(buffer, enc, cb) {
     var name = buffer.toString();
@@ -174,11 +172,11 @@ Client.prototype.glob = function(runtime, onmount) {
 
     cb(null, buffer);
   }
-}
+};
 
 Client.prototype.connect = function(name) {
-  var client = this
-  var peers = client.peers
+  var client = this;
+  var peers = client.peers;
 
   assert.ok(name, 'name is required');
 
@@ -215,11 +213,11 @@ Client.prototype.connect = function(name) {
         // about stale state of this peer...
         peers.put(name, {
           status: 'stale'
-        })
+        });
 
         // Do some cleanup and remove the stale entry so other peers don't have
-        // to.
-        runtime.namespace().delete(context, name, true, noop)
+        // to deal with this error case.
+        runtime.namespace().delete(context, name, true, noop);
 
         // Remove the local stale refernce if the client is mounted. This
         // prevents re-connect from being attempted when the glob stream is
@@ -240,7 +238,7 @@ Client.prototype.connect = function(name) {
     // at a later time...
     remote.announce(context, client.name, function(err, response) {
       if (err) {
-        debug('announce errored: %s', err.stack)
+        debug('announce errored: %s', err.stack);
         // TODO(jasoncampbell): Come up with a strategy to alert other peers
         // about stale state of this peer...
         client.emit('error', err);
@@ -251,17 +249,18 @@ Client.prototype.connect = function(name) {
 
       peers.put(name, {
         status: 'connected'
-      })
-    })
-  })
-}
+      });
+    });
+  });
+};
 
+// TODO(jasoncampbell): Move naming related code into a sepatate module.
 function getName(runtime) {
   return [
     prefix(runtime),
     'reader-example',
     uuid.v4()
-  ].join('/')
+  ].join('/');
 }
 
 // Helper function to return a mountable prefix name from a runtime

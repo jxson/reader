@@ -3,7 +3,6 @@
 // license that can be found in the LICENSE file.
 
 var assert = require('assert');
-var extend = require('extend');
 var ms = require('ms');
 var through = require('through2');
 
@@ -15,7 +14,7 @@ function createStream(options) {
   var found = false;
   var stream = through(write);
 
-  assert.ok(options.name, 'options.name is required')
+  assert.ok(options.name, 'options.name is required');
 
   glob(options, stream, done);
 

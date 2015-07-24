@@ -2,7 +2,7 @@
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
 
-var debug = require('debug')('reader:vanadium:service')
+var debug = require('debug')('reader:vanadium:service');
 
 module.exports = Service;
 
@@ -18,9 +18,12 @@ function Service(client) {
   service._client = client;
 }
 
-// errors are not bublling up into a context that makes sense, for instance
-// serverCall missing here causes problems but there is no where to hook in to
-// grab errors.
+// TODO(jasoncampbell): Explore why exceptions are not bubbling up into a
+// context that makes sense, for instance serverCall missing here causes
+// problems but there is no where to hook in to grab errors since they are only
+// logged by the vanadium module.
+//
+// SEE: https://github.com/vanadium/issues/issues/587
 Service.prototype.announce = function(context, serverCall, name, callback) {
   var service = this;
 

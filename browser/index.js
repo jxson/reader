@@ -12,7 +12,7 @@ var filePicker = require('./components/file-picker');
 var pageControls = require('./components/page-control');
 var pdf = require('./components/pdf');
 var constellation = require('./components/constellation');
-var vanadium = require('./vanadium')
+var vanadium = require('./vanadium');
 
 domready(function ondomready() {
   debug('domready');
@@ -70,7 +70,7 @@ function render(state) {
           state.pageControls,
           state.pageControls.channels),
       hg.partial(pdf.render, state.pdf, state.pdf.channels),
-      hg.partial(peers.render, state.peers, state.peers.channels)
+      hg.partial(constellation.render, state.constellation)
     ]);
   }
 }
