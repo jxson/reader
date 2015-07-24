@@ -33,6 +33,7 @@ clean:
 
 .PHONY:
 lint: node_modules
+	@dependency-check package.json --entry browser/index.js
 	@jshint .
 
 .PHONY:
