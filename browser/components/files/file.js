@@ -6,6 +6,7 @@ var h = require('mercury').h;
 var debug = require('debug')('reader:file');
 var anchor = require('../../router/anchor');
 var format = require('format');
+var click = require('../../events/click');
 
 module.exports = {
   state: state,
@@ -27,11 +28,24 @@ function state(blob, key) {
   };
 }
 
-function render(file) {
-  return anchor({
-    href: format('/%s', file.uuid)
-  }, [
-    h('h2', file.title),
-    h('p', format('%s - %s', file.blob.type, file.uuid))
+// Assumes it's being called as an array iterator with the thisArg set to this
+// component's parent channels attribute.
+// SEE: https://goo.gl/tu7srT
+function render(file, index, collection) {
+  var channels = this;
+
+  return h('.file', [
+    h('h2', [
+      anchor({
+        href: format('/%s', file.uuid)
+      }, file.title)
+    ]),
+    h('p', [
+      h('span', format('%s - %s ', file.blob.type, file.uuid)),
+      h('a.delete', {
+        href: '#',
+        'ev-click': click(channels.remove, { uuid: file.uuid })
+      }, 'DELETE')
+    ]),
   ]);
 }

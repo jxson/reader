@@ -56,7 +56,6 @@ function next(state, data) {
 }
 
 function previous(state, data) {
-  console.log('argeuments', arguments);
   // Only advance if it's not the first page.
   var current = state.pages.get('current');
   if (current > 1) {
@@ -66,14 +65,6 @@ function previous(state, data) {
 
 function load(state, file) {
   if (!file) {
-    return;
-  }
-
-  if (file.size === 0) {
-    var message = 'TODO: figure out why blobs from indexedDB' +
-        'will randomly have a size === 0';
-    var err = new Error(message);
-    state.error.set(err);
     return;
   }
 

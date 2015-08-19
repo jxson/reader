@@ -19,7 +19,7 @@ module.exports = function create(options) {
     channels: {
       // Scope options.store to this state instance's channel.add.
       add: add.bind(null, store),
-      open: open
+      remove: remove.bind(null, store)
     }
   });
 
@@ -42,5 +42,20 @@ function add(store, state, data) {
     }
 
     debug('put success!');
+  });
+}
+
+function remove(store, state, data) {
+  assert.ok(data.uuid, 'data.uuid required');
+
+  state.collection.delete(data.uuid);
+
+  store.del(data.uuid, function ondel(err) {
+    if (err) {
+      state.error.set(err);
+      return;
+    }
+
+    debug('del success!');
   });
 }

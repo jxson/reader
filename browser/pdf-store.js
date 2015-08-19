@@ -8,13 +8,22 @@ var db = leveljs('pdf-store');
 var series = require('run-series');
 var IteratorStream = require('level-iterator-stream');
 var eos = require('end-of-stream');
+var options = { raw: true };
+var format = require('format');
+var EventEmitter = require('events').EventEmitter;
+var ee = new EventEmitter();
 
 module.exports = {
   all: all,
   get: get,
   put: put,
-  del: del
+  del: del,
+  on: ee.on.bind(null)
 };
+
+function emit(name) {
+  ee.apply(ee, arguments);
+}
 
 // TODO(jasoncampbell): It might be better to stream the records in and take
 // cursor options so the UI can update quicker and provide controls for
@@ -49,7 +58,6 @@ function all(callback) {
 function get(key, callback) {
   debug('get: %s', key);
 
-  var options = { raw: true };
   var tasks = [
     db.open.bind(db),
     db.get.bind(db, key, options)
@@ -57,21 +65,27 @@ function get(key, callback) {
 
   series(tasks, function done(err, results) {
     if (err) {
-      debug('put error: %s\ns', err.message, err.stack);
+      debug('get error: %s\ns', err.message, err.stack);
       return callback(err);
     }
 
     // The value is the result of the last task.
     var last = results.length - 1;
     var value = results[last];
-    debug('get success: %o', value);
 
+    if (value.size === 0) {
+      // TODO(jasoncampbell): figure out why blobs from indexedDB will randomly
+      // have a size === 0
+      var message = format('PDF: %s has a zero size', key);
+      return callback(new Error(message));
+    }
+
+    debug('get success: %o', value);
     callback(null, value);
   });
 }
 
 function put(key, value, callback) {
-  var options = { raw: true };
   var tasks = [
     db.open.bind(db),
     db.put.bind(db, key, value, options),
@@ -86,12 +100,28 @@ function put(key, value, callback) {
 
     var last = results.length - 1;
     var value = results[last];
+    var record = {
+      key: key,
+      value: value
+    };
 
     debug('get success: %o', value);
-    callback(null, { key: key, value: value });
+    emit('put', record);
+    callback(null, record);
   });
 }
 
-function del() {
-  throw new Error('Not implemented.');
+function del(key, callback) {
+  var tasks = [
+    db.del.bind(db, key, options, callback),
+  ];
+
+  series(tasks, function done(err, results) {
+    if (err) {
+      debug('del error: %s\n%s', err.message, err.stack);
+      return callback(err);
+    } else {
+      return callback();
+    }
+  });
 }

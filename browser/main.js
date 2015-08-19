@@ -30,7 +30,6 @@ domready(function ondomready() {
     files: files.state({
       store: store
     }),
-    // pageControls: pageControls.state(),
     constellation: constellation.state(),
     error: hg.value(null)
   });
