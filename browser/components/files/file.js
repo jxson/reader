@@ -21,7 +21,7 @@ function state(blob, key) {
   // NOTE: blob.lastModifiedDate will always be the last db access time, we will
   // need to track and modify update times manually.
   return {
-    uuid: key,
+    hash: key,
     // TODO: Make title editable.
     title: blob.name,
     blob: blob
@@ -37,14 +37,14 @@ function render(file, index, collection) {
   return h('.file', [
     h('h2', [
       anchor({
-        href: format('/%s', file.uuid)
+        href: format('/%s', file.hash)
       }, file.title)
     ]),
     h('p', [
-      h('span', format('%s - %s ', file.blob.type, file.uuid)),
+      h('span', format('%s - %s ', file.blob.type, file.hash)),
       h('a.delete', {
         href: '#',
-        'ev-click': click(channels.remove, { uuid: file.uuid })
+        'ev-click': click(channels.remove, { hash: file.hash })
       }, 'DELETE')
     ]),
   ]);

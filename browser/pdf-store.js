@@ -10,6 +10,8 @@ var IteratorStream = require('level-iterator-stream');
 var eos = require('end-of-stream');
 var options = { raw: true };
 var format = require('format');
+var assert = require('assert');
+var hash = require('./hash-file');
 var EventEmitter = require('events').EventEmitter;
 var ee = new EventEmitter();
 
@@ -18,12 +20,8 @@ module.exports = {
   get: get,
   put: put,
   del: del,
-  on: ee.on.bind(null)
+  on: ee.on.bind(ee)
 };
-
-function emit(name) {
-  ee.apply(ee, arguments);
-}
 
 // TODO(jasoncampbell): It might be better to stream the records in and take
 // cursor options so the UI can update quicker and provide controls for
@@ -85,30 +83,34 @@ function get(key, callback) {
   });
 }
 
-function put(key, value, callback) {
-  var tasks = [
-    db.open.bind(db),
-    db.put.bind(db, key, value, options),
-    db.get.bind(db, key, options)
-  ];
+function put(file, callback) {
+  assert.ok(file instanceof File, 'Must use a File object.');
 
-  series(tasks, function done(err, results){
+  hash(file, onhash);
+
+  return;
+
+  function onhash(err, key) {
     if (err) {
-      debug('put error: %s\ns', err.message, err.stack);
+      debug('hash error: %s\ns', err.message, err.stack);
       return callback(err);
     }
 
-    var last = results.length - 1;
-    var value = results[last];
-    var record = {
-      key: key,
-      value: value
-    };
+    var tasks = [
+      db.open.bind(db),
+      db.put.bind(db, key, file, options),
+    ];
 
-    debug('get success: %o', value);
-    emit('put', record);
-    callback(null, record);
-  });
+    series(tasks, function done(err, results){
+      if (err) {
+        debug('put error: %s\ns', err.message, err.stack);
+        return callback(err);
+      }
+
+      callback(null, key, file);
+      ee.emit('put', key, file);
+    });
+  }
 }
 
 function del(key, callback) {

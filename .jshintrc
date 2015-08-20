@@ -27,6 +27,7 @@
     "PDFJS": false,
     "window": true,
     "event": true,
-    "document": true
+    "document": true,
+    "File": true
   }
 }

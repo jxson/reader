@@ -5,7 +5,6 @@
 var hg = require('mercury');
 var debug = require('debug')('reader:files');
 var file = require('./file');
-var uuid = require('uuid');
 var assert = require('assert');
 
 module.exports = function create(options) {
@@ -29,33 +28,26 @@ module.exports = function create(options) {
 function add(store, state, data) {
   assert.ok(data.file, 'A File object must be passed into channel');
 
-  var key = uuid.v4();
-  state.collection.put(key, data.file);
-
-  debug('file %o', data.file);
-
-  store.put(key, data.file, function onput(err) {
+  store.put(data.file, function onput(err, key) {
     if (err) {
       state.error.set(err);
-      state.collection.delete(key);
       return;
     }
 
-    debug('put success!');
+    state.collection.put(key, data.file);
+    debug('added file: %s', key);
   });
 }
 
 function remove(store, state, data) {
-  assert.ok(data.uuid, 'data.uuid required');
-
-  state.collection.delete(data.uuid);
-
-  store.del(data.uuid, function ondel(err) {
+  assert.ok(data.hash, 'data.uuid required');
+  debug('removing file: %s', data.hash);
+  store.del(data.hash, function ondel(err) {
     if (err) {
       state.error.set(err);
       return;
     }
 
-    debug('del success!');
+    state.collection.delete(data.hash);
   });
 }

@@ -216,7 +216,7 @@ Client.prototype.connect = function(name) {
         // to deal with this error case.
         runtime.namespace().delete(context, name, true, noop);
 
-        // Remove the local stale refernce if the client is mounted. This
+        // Remove the local stale reference if the client is mounted. This
         // prevents re-connect from being attempted when the glob stream is
         // active.
         if (client.mounted) {
