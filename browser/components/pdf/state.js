@@ -8,7 +8,7 @@ var debug = require('debug')('reader:pdf');
 module.exports = create;
 
 function create(options) {
-  debug('creating state: %o', options);
+  debug('creating PDF state: %o', options);
 
   var state = hg.state({
     error: hg.value(null),

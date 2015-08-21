@@ -2,30 +2,34 @@
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
 
+var hg = require('mercury');
 var h = require('mercury').h;
 var debug = require('debug')('reader:file');
 var anchor = require('../../router/anchor');
 var format = require('format');
 var click = require('../../events/click');
+var assert = require('assert');
 
 module.exports = {
   state: state,
   render: render
 };
 
-function state(blob, key) {
-  debug('creating file: %o', arguments);
+function state(options, key) {
+  debug(' creating new file state: %s - %o', key, options);
 
-  // NOTE: blob is a File object
+  // If the blob was created in this application instance it will be a File
+  // object and have a name attribute. If it was created by a peer it will
+  // manifest locally as a Blob object (Files can't be directly constructed).
+  //
   // SEE: https://developer.mozilla.org/en-US/docs/Web/API/File
-  // NOTE: blob.lastModifiedDate will always be the last db access time, we will
-  // need to track and modify update times manually.
-  return {
-    hash: key,
-    // TODO: Make title editable.
-    title: blob.name,
-    blob: blob
-  };
+  assert.ok(options.blob, 'options.blob is required');
+
+  return hg.struct({
+    hash: options.hash || key,
+    title: options.title || options.blob.name || '',
+    blob: options.blob
+  });
 }
 
 // Assumes it's being called as an array iterator with the thisArg set to this

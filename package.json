@@ -51,6 +51,7 @@
     "run-waterfall": "^1.1.2",
     "sha256d": "^1.0.0",
     "single-page": "^1.0.0",
+    "thunky": "^0.1.0",
     "uuid": "^2.0.1",
     "vanadium": "*",
     "xtend": "^4.0.0"

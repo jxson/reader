@@ -25,7 +25,7 @@ domready(function ondomready() {
 
   // Top level state.
   var state = hg.state({
-    uuid: hg.value(null),
+    hash: hg.value(null),
     pdf: pdf.state({}),
     files: files.state({
       store: store
@@ -72,11 +72,9 @@ function render(state) {
 }
 
 function content(state) {
-  debug('render content: %o', state);
-
   var partial;
 
-  if (state.uuid) {
+  if (state.hash) {
     partial = hg.partial(pdf.render, state.pdf, state.pdf.channels);
   } else {
     partial = hg.partial(files.render, state.files, state.files.channels);

@@ -8,8 +8,8 @@ var file = require('./file');
 var assert = require('assert');
 
 module.exports = function create(options) {
-  assert.ok(options, 'files.state(options) - options required');
-  assert.ok(options.store, 'files.state(options) - options.store required');
+  assert.ok(options, 'options required');
+  assert.ok(options.store, 'options.store required');
 
   var store = options.store;
   var state = hg.state({
@@ -28,19 +28,23 @@ module.exports = function create(options) {
 function add(store, state, data) {
   assert.ok(data.file, 'A File object must be passed into channel');
 
-  store.put(data.file, function onput(err, key) {
+  store.put(data.file, function onput(err, hash) {
     if (err) {
       state.error.set(err);
       return;
     }
 
-    state.collection.put(key, data.file);
-    debug('added file: %s', key);
+    state.collection.put(hash, {
+      hash: hash,
+      blob: data.file
+    });
+
+    debug('added file: %s', hash);
   });
 }
 
 function remove(store, state, data) {
-  assert.ok(data.hash, 'data.uuid required');
+  assert.ok(data.hash, 'data.hash required');
   debug('removing file: %s', data.hash);
   store.del(data.hash, function ondel(err) {
     if (err) {
