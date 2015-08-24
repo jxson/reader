@@ -19,15 +19,10 @@
   "undef": true,
   "unused": "vars",
 
-  "browser": true,
   "devel": true,
   "node": true,
 
   "globals": {
-    "PDFJS": false,
-    "window": true,
-    "event": true,
-    "document": true,
-    "File": true
+    "PDFJS": false
   }
 }

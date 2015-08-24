@@ -13,6 +13,7 @@ var leveljs = require('level-js');
 var series = require('run-series');
 var through = require('through2');
 var thunky = require('thunky');
+var window = require('global/window');
 
 // Create a singleton instance of a database for this application.
 var db = leveljs('pdf-store');

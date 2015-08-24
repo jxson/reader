@@ -4,6 +4,7 @@
 
 var hg = require('mercury');
 var debug = require('debug')('reader:pdf');
+var window = require('global/window');
 
 module.exports = create;
 
@@ -82,7 +83,7 @@ function load(state, file) {
 
   function requestDataRange(begin, end) {
     var blob = this.file.slice(begin, end);
-    var fileReader = new FileReader();
+    var fileReader = new window.FileReader();
 
     fileReader.onload = function onload() {
       transport.count += end - begin;
