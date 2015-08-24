@@ -7,12 +7,13 @@ var filereader = require('filereader-stream');
 var once = require('once');
 var sha256d = require('sha256d');
 var through = require('through2');
+var window = require('global/window');
 
 module.exports = hash;
 
 function hash(file, callback) {
   callback = once(callback);
-  assert.ok(file instanceof File, 'Must use a File object.');
+  assert.ok(file instanceof window.Blob, 'Must use a Blob object.');
 
   var h = sha256d();
   var stream = through(write, flush);

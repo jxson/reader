@@ -45,6 +45,7 @@
     "ms": "^0.7.1",
     "once": "^1.3.2",
     "prr": "^1.0.1",
+    "readable-blob-stream": "^1.0.0",
     "routes": "^2.1.0",
     "run-parallel": "^1.1.2",
     "run-series": "^1.1.2",

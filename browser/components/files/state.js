@@ -26,7 +26,9 @@ module.exports = function create(options) {
 };
 
 function add(store, state, data) {
-  assert.ok(data.file, 'A File object must be passed into channel');
+  if (!data.file) {
+    return;
+  }
 
   store.put(data.file, function onput(err, hash) {
     if (err) {

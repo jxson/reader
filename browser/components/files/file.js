@@ -10,13 +10,14 @@ var format = require('format');
 var click = require('../../events/click');
 var assert = require('assert');
 
+// TODO(jasoncampbell): break this into it's own module/component.
 module.exports = {
   state: state,
   render: render
 };
 
 function state(options, key) {
-  debug(' creating new file state: %s - %o', key, options);
+  debug('creating new file state: %s - %o', key, options);
 
   // If the blob was created in this application instance it will be a File
   // object and have a name attribute. If it was created by a peer it will

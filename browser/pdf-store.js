@@ -22,7 +22,7 @@ var db = leveljs('pdf-store');
 // database call and need to start with a call to open in thier series chain of
 // async function calls.
 var open = thunky(function opening(callback) {
-  debug('opening database');
+  debug('initializing database');
   db.open(callback);
 });
 
@@ -111,7 +111,7 @@ function put(file, options, callback) {
   callback = typeof options === 'function' ? options : callback;
   options = extend(defaults, (typeof options === 'object' ? options : {}));
 
-  assert.ok(file instanceof window.File, 'Must use a File object.');
+  assert.ok(file instanceof window.Blob, 'Must use a Blob object.');
 
   hash(file, onhash);
 
