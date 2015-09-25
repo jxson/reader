@@ -11,7 +11,6 @@ module.exports = {
 
 function index(state, params, route) {
   debug('index');
-  state.hash.set(null);
 }
 
 function show(state, params, route) {
