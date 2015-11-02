@@ -14,18 +14,22 @@ module.exports = {
 function render(state, channels) {
   insert(css);
 
-  if (state.hash) {
-    return h('.hidden');
-  }
-
   return h('header', [
-    anchor({
-      href: '/',
-      className: 'menu'
-    }, 'Menu'),
-    h('.title', 'PDF Reader'),
-    h('a.more', {
-      href: '#'
-    }, '...')
+    h('.title', 'PDF Reader')
   ]);
+
+  // if (state.hash) {
+  //   return h('.hidden');
+  // }
+  //
+  // return h('header', [
+  //   anchor({
+  //     href: '/',
+  //     className: 'menu'
+  //   }, 'Menu'),
+  //   h('.title', 'PDF Reader'),
+  //   h('a.more', {
+  //     href: '#'
+  //   }, '...')
+  // ]);
 }

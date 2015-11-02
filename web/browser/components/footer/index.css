@@ -3,33 +3,54 @@
 /* license that can be found in the LICENSE file. */
 
 @import "../base/variables.css";
+@import "./typography.css";
 
 footer {
-  position: relative;
+  display: flex;
+  position: fixed;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  padding: var(--gutter);
 }
 
-footer .add-file {
-  display: block;
-  position: absolute;
-  right: var(--gutter);
-  bottom: var(--gutter);
-  background-color: grey;
+footer .hidden {
+  display: none;
+}
+
+footer .spacer {
+  flex: 1;
+}
+
+footer .fab {
+  position: relative;
+  border-radius: 50%;
   width: calc(var(--gutter) * 2);
   height: calc(var(--gutter) * 2);
-  border-radius: 50%;
   box-shadow: var(--drop-shadow);
-  text-indent: -10000px;
-  cursor: pointer;
-}
-
-footer .add-file.active {
   background-color: var(--deeporange-A200);
+  padding: 0;
+  overflow: hidden;
+  cursor: pointer;
+  transition: box-shadow 0.2s cubic-bezier(0.4, 0, 1, 1),
+    background-color 0.2s cubic-bezier(0.4, 0, 0.2, 1),
+    color 0.2s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-footer .add-file:hover {
-  background-color: var(--cyan-900);
+footer .fab:hover {
+
 }
 
-footer .add-file:active {
-  background-color: var(--cyan-800);
+footer .fab:active {
+  box-shadow: var(--drop-shadow-intense);
+  background-color: color(var(--deeporange-A200) shade(10%));
+}
+
+footer .fab .material-icons {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  line-height: 1;
+  transform: translate(-12px, -12px);
+  color: var(--white);
 }

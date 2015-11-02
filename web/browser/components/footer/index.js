@@ -14,16 +14,11 @@ module.exports = {
 function render(state, add) {
   insert(css);
 
-  if (state.hash) {
-    return h('div.hidden');
-  }
-
   return h('footer', [
-    h('label.add-file',
-    {
-      className: state.store ? 'active' : ''
-    },
-    [
+    h('.spacer'),
+    // TODO(jasoncampbell): move this to the files component.
+    h('label.fab', [
+      h('i.material-icons', 'add'),
       h('input.hidden', {
         type: 'file',
         'ev-event': file(add)

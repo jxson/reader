@@ -6,6 +6,8 @@ var hg = require('mercury');
 var debug = require('debug')('reader:files');
 var assert = require('assert');
 var cuid = require('cuid');
+var format = require('format');
+var hash = require('./hash-blob');
 
 module.exports = function create(options) {
   options = options || {};
@@ -28,12 +30,31 @@ function add(state, data) {
     return;
   }
 
+  if (data.file.type !== 'application/pdf') {
+    var message = format('The file "%s" is not a PDF.', data.file.name);
+    var err = new Error(message);
+    return state.error.set(err);
+  }
+
   debug('adding file: %o', data.file);
+
   // TODO(jasoncampbell): Add validation for blob.type === "application/pdf"
   var key = cuid();
 
   state.collection.put(key, {
     blob: data.file
+  });
+
+  // async hash
+  hash(data.file, function onhash(err, digest) {
+    if (err) {
+      return state.error.set(err);
+    }
+
+    var file = state.collection.get(key);
+    if (file) {
+      file.hash.set(digest);
+    }
   });
 }
 
@@ -58,6 +79,7 @@ function createFile(options, key) {
     title: hg.value(options.title || blob.name || ''),
     size: hg.value(options.size || blob.size),
     type: hg.value(options.type || blob.type),
-    blob: hg.value(blob || null)
+    blob: hg.value(blob || null),
+    hash: hg.value(options.hash || '')
   });
 }

@@ -16,6 +16,8 @@ var insert = require('insert-css');
 var mover = require('./components/mover');
 var router = require('./components/router');
 var window = require('global/window');
+var error = require('./components/error');
+var devices = require('./components/devices');
 
 // Expose globals for debugging.
 window.debug = require('debug');
@@ -28,14 +30,25 @@ domready(function ondomready() {
   // Top level state.
   var state = hg.state({
     store: hg.value(null),
-    files: files.state(),
-    mover: mover.state({}),
     router: router.state({
       '#!/': index,
       '#!/mover': showMover,
       '#!/:id': show,
       '*': notfound
-    })
+    }),
+    files: files.state(),
+    devices: devices.state()
+    // device:
+
+
+
+    // mover: mover.state({}),
+  });
+
+  // TODO(jasoncampbell): Can there be a dynamic error listener which maps
+  // errors to the top error component?
+  state.files.error(function (err) {
+    console.error('err', err);
   });
 
   hg.app(document.body, state, render);
@@ -53,13 +66,15 @@ function render(state) {
 }
 
 function index(state, params, route) {
+  debug('index route: %o', route);
+
   return h('main', [
     hg.partial(files.render, state.files, state.files.channels)
   ]);
 }
 
 function show(state, params, route) {
-  debug('show: %s', params.id);
+  debug('show: %s', params.id, state);
 
   return h('main', [
 

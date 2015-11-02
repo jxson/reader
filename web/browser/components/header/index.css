@@ -6,11 +6,28 @@
 @import "../base/typography.css";
 
 header {
+  position: fixed;
+  top: 0;
   width: 100%;
   display: flex;
   align-items: center;
   background-color: var(--cyan-800);
-  box-shadow: var(--drop-shadow-intense);
+  box-shadow: var(--drop-shadow);
+  color: var(--white);
+  z-index: 900;
+
+  /*position: fixed;
+top: 0;
+width: 100%;
+height: var(--header-height);
+z-index: 900;
+background-color: var(--cyan-800);
+color: white;
+box-shadow: var(--drop-shadow);
+transition:
+  background-color ease-in-out 0.3s,
+  box-shadow ease-in-out 0.3s;*/
+
 }
 
 header a.menu,
@@ -24,7 +41,7 @@ header a.more {
 header .title {
   inherits: .type-smallhead;
   flex: 1;
-  text-align: center;
-  /* TODO(jasoncampbell): use a real material design based high-contrast theme */
-  color: var(--white);
+  padding: var(--gutter);
+  text-align: left;
+  color: inherit;
 }
