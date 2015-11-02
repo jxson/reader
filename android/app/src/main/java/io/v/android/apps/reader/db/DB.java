@@ -2,15 +2,18 @@
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
 
-package io.v.android.apps.reader;
+package io.v.android.apps.reader.db;
 
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 
+import io.v.android.apps.reader.model.Listener;
+import io.v.android.apps.reader.vdl.Device;
+import io.v.android.apps.reader.vdl.DeviceSet;
+import io.v.android.apps.reader.vdl.File;
+
 /**
- * Borrowed the idea of having a DB interface from syncslides.
- *
  * Provides high-level methods for getting and setting the state of PDF reader.
  * It is an interface instead of a concrete class to make testing easier.
  */
@@ -26,9 +29,9 @@ public interface DB {
                 synchronized (Singleton.class) {
                     result = instance;
                     if (result == null) {
-                        // TODO(youngseokyoon): Replace this with a syncbase DB.
-//                        instance = result = new FakeDB(context);
-                        instance = result = new SyncbaseDB(context);
+                        // uncomment either one
+                        instance = result = new FakeDB(context);
+//                        instance = result = new SyncbaseDB(context);
                     }
                 }
             }
@@ -55,46 +58,28 @@ public interface DB {
     boolean onActivityResult(int requestCode, int resultCode, Intent data);
 
     /**
-     * Represents a PDF file and its metadata.
-     *
-     * TODO(youngseokyoon): update this interface, once the syncbase DB schema is defined.
+     * Provides a list of elements that fits well with RecyclerView.Adapter.
      */
-    interface PdfFile {
-        String getName();
-    }
-
-    /**
-     * Callbacks for when the dataset changes dynamically.
-     *
-     * TODO(youngseokyoon): reorganize the interfaces into sub-packages.
-     */
-    interface Listener {
-        void notifyItemChanged(int position);
-        void notifyItemInserted(int position);
-        void notifyItemRemoved(int position);
-    }
-
-    /**
-     * Provides a list of PDF files via an API that fits well with RecyclerView.Adapter.
-     */
-    interface PdfFileList {
+    interface DBList<E> {
         /**
-         * Returns the number of available PDF files.
+         * Returns the number of available elements.
          */
         int getItemCount();
 
         /**
-         * Returns the PDF file object at the given position.
+         * Returns the element at the given position.
          */
-        PdfFile getPdfFile(int position);
+        E getItem(int position);
 
         /**
-         * Sets the listener for changes to the list.  There can only be one listener.
+         * Sets the listener for changes to the list.
+         * There can only be one listener.
          */
         void setListener(Listener listener);
 
         /**
-         * Indicates that the list is no longer needed and should stop notifying its listener.
+         * Indicates that the list is no longer needed
+         * and should stop notifying its listener.
          */
         void discard();
     }
@@ -103,6 +88,25 @@ public interface DB {
      * Gets the list of available PDF files.
      * @return a list of PDF files.
      */
-    PdfFileList getPdfFileList();
+    DBList<File> getFileList();
+
+    /**
+     * Gets the list of devices of this user.
+     * @return a list of devices.
+     */
+    DBList<Device> getDeviceList();
+
+    /**
+     * Gets the list of currently active device sets.
+     * @return a list of device sets.
+     */
+    DBList<DeviceSet> getDeviceSetList();
+
+    /**
+     * Gets the PDF file with the given id.
+     * @param id the id of the file
+     * @return the file object, or null if there is no file with the given id.
+     */
+    File getFileById(String id);
 
 }
