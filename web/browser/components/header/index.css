@@ -15,19 +15,6 @@ header {
   box-shadow: var(--drop-shadow);
   color: var(--white);
   z-index: 900;
-
-  /*position: fixed;
-top: 0;
-width: 100%;
-height: var(--header-height);
-z-index: 900;
-background-color: var(--cyan-800);
-color: white;
-box-shadow: var(--drop-shadow);
-transition:
-  background-color ease-in-out 0.3s,
-  box-shadow ease-in-out 0.3s;*/
-
 }
 
 header a.menu,

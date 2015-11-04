@@ -7,7 +7,6 @@ var debug = require('debug')('reader:main');
 var document = require('global/document');
 var domready = require('domready');
 var files = require('./components/files');
-var footer = require('./components/footer');
 var format = require('format');
 var h = require('mercury').h;
 var header = require('./components/header');
@@ -16,8 +15,8 @@ var insert = require('insert-css');
 var mover = require('./components/mover');
 var router = require('./components/router');
 var window = require('global/window');
-var error = require('./components/error');
 var devices = require('./components/devices');
+var sets = require('./components/device-sets');
 
 // Expose globals for debugging.
 window.debug = require('debug');
@@ -37,12 +36,28 @@ domready(function ondomready() {
       '*': notfound
     }),
     files: files.state(),
-    devices: devices.state()
-    // device:
-
+    devices: devices.state(),
+    sets: sets.state(),
 
 
     // mover: mover.state({}),
+  });
+
+  var set = require('./components/device-set');
+
+  files.on('add', function onFileAdd(file) {
+    debug('add file: %o', file);
+
+    var ds = set.state({
+      file: file,
+    });
+
+    debug('ds: %o', ds());
+
+    var device = state.devices.collection.get(state.devices.current());
+
+    ds.devices.put(device.id(), device);
+    state.sets.collection.put(ds.id(), ds);
   });
 
   // TODO(jasoncampbell): Can there be a dynamic error listener which maps
@@ -61,14 +76,15 @@ function render(state) {
   return h('.reader-app', [
     hg.partial(header.render, state),
     hg.partial(router.render, state.router, state),
-    hg.partial(footer.render, state, state.files.channels.add)
   ]);
 }
 
 function index(state, params, route) {
   debug('index route: %o', route);
+  debug('=== list view ===');
 
   return h('main', [
+    hg.partial(sets.render, state.sets, state.sets.channels),
     hg.partial(files.render, state.files, state.files.channels)
   ]);
 }

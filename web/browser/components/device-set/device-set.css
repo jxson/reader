@@ -1,20 +1,8 @@
-/* Copyright 2015 The Vanadium Authors. All rights reserved. */
-/* Use of this source code is governed by a BSD-style */
-/* license that can be found in the LICENSE file. */
-
-@import "../base/variables.css";
 @import "../base/reset.css";
 @import "../base/typography.css";
+@import "../base/variables.css";
 
-.files {
-  /* HACK: Header's title line-height + 2x the gutters. */
-  margin-top: calc(20px + (var(--gutter) * 2));
-  padding-left: var(--gutter);
-  padding-right: var(--gutter);
-  border-top: 1px solid transparent;
-}
-
-.file {
+.device-set {
   inherits: .reset-box;
   display: flex;
   flex-direction: column;
@@ -27,36 +15,55 @@
   margin: var(--gutter) auto;
 }
 
-.file .header {
+.device-set .header {
   padding: calc(var(--gutter));
-  padding-bottom: 0;
 }
 
-.file .header .title {
+.device-set .header .title {
   inherits: .type-title;
 }
 
-.file .header .subhead {
+.device-set .header .subhead {
   inherits: .type-smallhead;
   color: var(--blue-grey-500);
 }
 
-.file .support {
-  padding: 0 calc(var(--gutter));
+.device-set .support {
+  background-color: var(--blue-grey-25);
+  padding: calc(var(--gutter));
+  border-top: 1px solid var(--blue-grey-100);
 }
 
-.file .support p {
+.device-set .support p {
   margin: var(--gutter) 0;
 }
 
-.file .actions {
+.device-set .support .devices > .title {
+  font-weight: bold;
+}
+
+.device-set .support ul,
+.device-set .support li {
+  inherits: .reset-box;
+}
+
+.device-set .support ul {
+  margin-top: var(--gutter);
+}
+
+.device-set .support ul ul {
+  margin-top: 0;
+  padding-left: var(--gutter);
+}
+
+.device-set .actions {
   display: flex;
   justify-content: flex-end;
   border-top: 1px solid var(--blue-grey-100);
   padding: calc(var(--gutter) * (1/3));
 }
 
-.file .actions a {
+.device-set .actions a {
   inherits: .reset;
   inherits: .type-smallhead;
   border-radius: 2px;
@@ -69,18 +76,14 @@
     color 0.2s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-.file .actions a:hover {
+.device-set .actions a:hover {
   background-color: var(--blue-grey-50);
 }
 
-.file .actions a.read {
+.device-set .actions a.read {
   color: var(--cyan-800);
 }
 
-.file .actions a.delete {
+.device-set .actions a.delete {
   color: var(--blue-grey-400);
-}
-
-.blank-slate {
-  padding: var(--gutter) 0;
 }
