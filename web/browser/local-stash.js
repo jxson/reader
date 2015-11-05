@@ -1,16 +1,21 @@
 
+var window = require('global/window');
+
 module.exports = stash;
 module.exports.get = get;
 module.exports.set = set;
 module.exports.del = del;
 
 function stash(key, value){
-  if (! value) return get(key);
-  else return set(key, value);
+  if (! value) {
+    return get(key);
+  } else {
+    return set(key, value);
+  }
 }
 
 function get(key){
-  var local = localStorage.getItem(key);
+  var local = window.localStorage.getItem(key);
 
   return JSON.parse(local);
 }
@@ -18,9 +23,9 @@ function get(key){
 function set(key, value){
   value = JSON.stringify(value);
 
-  localStorage.setItem(key, value);
+  window.localStorage.setItem(key, value);
 }
 
 function del(key){
-  localStorage.removeItem(key);
+  window.localStorage.removeItem(key);
 }

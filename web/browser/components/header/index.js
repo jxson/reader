@@ -15,7 +15,9 @@ function render(state, channels) {
   insert(css);
 
   return h('header', [
-    h('.title', 'PDF Reader')
+    h('a.title', {
+      href: '/'
+    }, 'PDF Reader')
   ]);
 
   // if (state.hash) {

@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
 
+var pdf = require('./components/pdf-viewer');
 var css = require('./components/base/index.css');
 var debug = require('debug')('reader:main');
 var document = require('global/document');
@@ -17,6 +18,7 @@ var router = require('./components/router');
 var window = require('global/window');
 var devices = require('./components/devices');
 var sets = require('./components/device-sets');
+var set = require('./components/device-set');
 
 // Expose globals for debugging.
 window.debug = require('debug');
@@ -38,12 +40,21 @@ domready(function ondomready() {
     files: files.state(),
     devices: devices.state(),
     sets: sets.state(),
+    pdf: pdf.state(),
 
 
     // mover: mover.state({}),
   });
 
-  var set = require('./components/device-set');
+  state.router(function routechange(data) {
+    var pattern = data.route.route;
+    var id = data.route.params.id;
+
+    if (pattern === '#!/:id') {
+      var ds = state.sets.collection.get(id);
+      state.pdf.deviceSet.set(ds);
+    }
+  });
 
   files.on('add', function onFileAdd(file) {
     debug('add file: %o', file);
@@ -90,10 +101,11 @@ function index(state, params, route) {
 }
 
 function show(state, params, route) {
+  debug('=== PDF view ===');
   debug('show: %s', params.id, state);
 
   return h('main', [
-
+    hg.partial(pdf.render, state.pdf, state.pdf.channels)
   ]);
 }
 
