@@ -19,19 +19,4 @@ function render(state, channels) {
       href: '/'
     }, 'PDF Reader')
   ]);
-
-  // if (state.hash) {
-  //   return h('.hidden');
-  // }
-  //
-  // return h('header', [
-  //   anchor({
-  //     href: '/',
-  //     className: 'menu'
-  //   }, 'Menu'),
-  //   h('.title', 'PDF Reader'),
-  //   h('a.more', {
-  //     href: '#'
-  //   }, '...')
-  // ]);
 }

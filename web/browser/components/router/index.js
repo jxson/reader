@@ -21,16 +21,16 @@ module.exports = {
   href: href
 };
 
-function state(map) {
-  debug('initializing: %o', map);
+function state(options) {
+  debug('initializing: %o', options);
 
   var atom = hg.state({
-    href: hg.value(''),
-    route: hg.struct({}),
-    routes: [],
-    channels: {
-      match: match
-    }
+    href: hg.value(options.href || ''),
+    // route: hg.struct({}),
+    // routes: [],
+    // channels: {
+    //   match: match
+    // }
   });
 
   for (var key in map) { // jshint ignore: line

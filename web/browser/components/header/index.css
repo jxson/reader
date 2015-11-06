@@ -17,6 +17,10 @@ header {
   z-index: 900;
 }
 
+header.hidden {
+  display: none;
+}
+
 header a.menu,
 header a.more {
   color: var(--white);

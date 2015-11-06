@@ -3,6 +3,7 @@
 // license that can be found in the LICENSE file.
 
 var document = require('global/document');
+var window = require('global/window');
 
 module.exports = PDFWidget;
 
@@ -21,7 +22,7 @@ PDFWidget.prototype.init = function init() {
   var widget = this;
   var element = document.createElement('canvas');
   element.setAttribute('class','pdf-canvas');
-
+  element.width = window.innerWidth;
   widget.update(null, element);
   return element;
 };
@@ -41,7 +42,9 @@ PDFWidget.prototype.update = function update(previous, element) {
   pdf.getPage(state.pages.current).then(success, error);
 
   function success(page) {
-    var viewport = page.getViewport(state.scale);
+    // var viewport = page.getViewport(canvas.width / page.getViewport(1.0).width);
+    var scale = element.width/page.getViewport(1.0).width;
+    var viewport = page.getViewport(scale);
     var context = element.getContext('2d');
 
     element.height = viewport.height;

@@ -1,4 +1,6 @@
 
+var format = require('format');
+var PDFWidget = require('./pdf-widget');
 var read = require('./read-file');
 var debug = require('debug')('reader:pdf-viewer');
 var hg = require('mercury');
@@ -18,10 +20,14 @@ function state(options) {
     deviceSet: hg.value(options.deviceSet),
     pdf: hg.value(null),
     error: hg.value(null),
-    progress: hg.value(0)
+    progress: hg.value(0),
+    pages: hg.varhash({
+      total: 1,
+      current: 1,
+    })
   });
 
-  atom.deviceSet(function filechange(deviceSet) {
+  atom.deviceSet(function (deviceSet) {
     load(atom, { blob: deviceSet.file.blob() });
   });
 
@@ -31,8 +37,51 @@ function state(options) {
 function render(state, channels) {
   insert(css);
 
-  return h('.pdf-viewer', [
-    h('p', 'SHOW PDF: ' + state.progress + '%')
+  debug('=== render ===');
+  debug('device-set %o', state.deviceSet());
+
+  var children = [];
+
+  if (state.progress < 100) {
+    var node = h('.progress', [
+      h('.progress-bar', {
+        style: { width: state.progress + '%' }
+      })
+    ]);
+
+    children.push(node);
+  } else {
+    children.push(hg.partial(controls, state, channels));
+    children.push(h('.pdf', new PDFWidget(state)));
+  }
+
+  return h('.pdf-viewer', children);
+}
+
+function controls(state, channels) {
+  return h('.pdf-controls', [
+    h('a.back', {
+      href: '/',
+    }, [
+      h('i.material-icons', 'arrow_back')
+    ]),
+    h('.title', 'File title'),
+    h('.pager', [
+      h('.meta', format('Page: %s of %s', 10, 20)),
+      h('a.previous', {
+        href: '#'
+      }, [
+        h('i.material-icons', 'chevron_left'),
+      ]),
+      h('a.next', {
+        href: '#'
+      }, [
+        h('i.material-icons', 'chevron_right'),
+      ])
+    ]),
+    h('a.menu', [
+      h('i.material-icons', 'more_vert'),
+    ])
   ]);
 }
 
@@ -58,9 +107,7 @@ function load(state, data) {
   function requestDataRange(begin, end) {
     var chunk = blob.slice(begin, end);
 
-    debug('about to read chunk');
     read(chunk, function onread(err, result) {
-      debug('chunk read');
       transport.count += end - begin;
       transport.onDataRange(begin, new Uint8Array(result));
     });
@@ -88,8 +135,8 @@ function load(state, data) {
 
   function success(pdf) {
     state.pdf.set(pdf);
-    // state.pages.put('current', 1);
-    // state.pages.put('total', pdf.numPages);
+    state.pages.put('current', 1);
+    state.pages.put('total', pdf.numPages);
   }
 
   function error(err) {
