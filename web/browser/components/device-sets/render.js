@@ -1,9 +1,8 @@
-var format = require('format');
-var window = require('global/window');
+var show = require('../device-set/render');
 var file = require('../../events/file');
 var hg = require('mercury');
 var map = require('../../util').map;
-var deviceSet = require('./device-set');
+var renderListItem = require('../device-set/render-list-item');
 var css = require('./device-sets.css');
 var h = require('mercury').h;
 var hg = require('mercury');
@@ -17,13 +16,16 @@ function render(state, channels) {
 
   if (state.current) {
     debug('=== SHOW %s ===', state.current);
+    var current = state.collection[state.current];
+    return show(current, current.channels);
   } else {
     debug('=== LIST ===');
+    return list(state, channels);
   }
+}
 
-  debug('render: %o', state.collection);
-
-  var children = map(state.collection, deviceSet.render, channels);
+function list(state, channels) {
+  var children = map(state.collection, renderListItem, channels);
   if (children.length === 0) {
     children = [ hg.partial(blank) ];
   }
@@ -47,3 +49,5 @@ function render(state, channels) {
 function blank() {
   return h('.blank-slate', 'Add a new PDF file below to get started.');
 }
+
+

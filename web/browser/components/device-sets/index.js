@@ -1,14 +1,8 @@
 
 var format = require('format');
-var window = require('global/window');
-var file = require('../../events/file');
 var hg = require('mercury');
-var map = require('../../util').map;
-var deviceSet = require('./device-set');
-var css = require('./device-sets.css');
-var h = require('mercury').h;
+var deviceSet = require('../device-set');
 var hg = require('mercury');
-var insert = require('insert-css');
 var debug = require('debug')('reader:device-sets');
 
 module.exports = {
@@ -41,7 +35,6 @@ function add(state, data) {
   }
 
   var blob = data.blob;
-
 
   debug('adding new device set for file: %o', blob);
 

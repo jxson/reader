@@ -19,6 +19,7 @@ var router = require('./components/router');
 var window = require('global/window');
 var devices = require('./components/devices');
 var deviceSets = require('./components/device-sets');
+var deviceSet = require('./components/device-set');
 
 
 // Expose globals for debugging.
@@ -26,18 +27,18 @@ window.debug = require('debug');
 window.require = require;
 global.require = require;
 
-// var routes = {
-//   INDEX: '#!/',
-//   SHOW: '#!/:id',
-//   NOT_FOUND: '*',
-// };
+var routes = {
+  INDEX: '#!/',
+  SHOW: '#!/:id',
+  NOT_FOUND: '*',
+};
 
 function state(dehydrated) {
   dehydrated = dehydrated || {};
   debug('reyhdrating from %o', dehydrated);
   return hg.state({
-    // router: router.state(routes)
-    deviceSets: deviceSets.state(dehydrated.deviceSets)
+    router: router.state({ routes: routes }),
+    deviceSets: deviceSets.state(dehydrated.deviceSets),
   });
 }
 
@@ -109,45 +110,40 @@ function render(state) {
   debug('render: %o', state);
   insert(css);
 
-  return h('.reader-app', [
-    hg.partial(header.render, state),
-    hg.partial(deviceSets.render, state.deviceSets, state.deviceSets.channels)
-    // hg.partial(router.render, state.router, state),
-  ]);
+  var children = [];
+
+  switch (state.router.route) {
+    case routes.INDEX:
+      children = [
+        hg.partial(header.render, state),
+        hg.partial(deviceSets.render,
+          state.deviceSets,
+          state.deviceSets.channels)
+      ];
+      break;
+    case routes.SHOW:
+      var key = state.router.params.id;
+      var value = state.deviceSets.collection[key];
+      children = [
+        hg.partial(deviceSet.render, value, value.channels)
+      ];
+      break;
+    case routes.NOT_FOUND:
+      children = [
+        hg.partial(notfound, state)
+      ];
+      break;
+  }
+
+  return h('.reader-app', children);
 }
 
-// function index(state, params, route) {
-//   debug('index route: %o', route);
-//   debug('=== list view ===');
-//
-//   return h('main', [
-//     hg.partial(sets.render, state.sets, state.sets.channels),
-//     hg.partial(files.render, state.files, state.files.channels)
-//   ]);
-// }
-//
-// function show(state, params, route) {
-//   debug('=== PDF view ===');
-//   debug('show: %s', params.id, state);
-//
-//   return h('main', [
-//     hg.partial(pdf.render, state.pdf, state.pdf.channels)
-//   ]);
-// }
-//
-// function showMover(state, params, route) {
-//   debug('show mover');
-//   return h('main', [
-//     hg.partial(mover.render, state.mover, state.mover.channels),
-//   ]);
-// }
-//
-// function notfound(state) {
-//   var href = state.router.href;
-//   console.error('TODO: not found error - %s', href);
-//
-//   return h('.notfound', [
-//     h('Not Found.'),
-//     h('p', format('The page "%s" does not exisit.', state.router.href))
-//   ]);
-// }
+function notfound(state) {
+  var href = state.router.href;
+  console.error('TODO: not found error - %s', href);
+
+  return h('.notfound', [
+    h('h1', 'Not Found.'),
+    h('p', format('The page "%s" does not exisit.', state.router.href))
+  ]);
+}
