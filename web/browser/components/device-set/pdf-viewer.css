@@ -6,22 +6,14 @@
 @import "../base/typography.css";
 
 .pdf-viewer {
-  /*padding-left: var(--gutter);
-  padding-right: var(--gutter);*/
-  /*border-top: 1px solid transparent;*/
   flex: 1;
   display: flex;
-  border: 1px solid magenta;
 }
 
 .pdf-viewer .progress {
   display: block;
   margin: 0;
-  /*margin: var(--gutter) auto;*/
-  /* HACK: Header's title line-height + 2x the gutters. */
-  /*margin-top: calc(20px + (var(--gutter) * 2));*/
   height: 4px;
-  /*width: 500px;*/
   max-width: 100%;
   position: relative;
   background-color: var(--cyan-600);

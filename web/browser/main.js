@@ -3,21 +3,17 @@
 // license that can be found in the LICENSE file.
 
 var stash = require('./local-stash');
-var pdf = require('./components/pdf-viewer');
 var css = require('./components/base/index.css');
 var debug = require('debug')('reader:main');
 var document = require('global/document');
 var domready = require('domready');
-var files = require('./components/files');
 var format = require('format');
 var h = require('mercury').h;
 var header = require('./components/header');
 var hg = require('mercury');
 var insert = require('insert-css');
-var mover = require('./components/mover');
 var router = require('./components/router');
 var window = require('global/window');
-var devices = require('./components/devices');
 var deviceSets = require('./components/device-sets');
 var deviceSet = require('./components/device-set');
 
@@ -37,6 +33,10 @@ function state(dehydrated) {
   dehydrated = dehydrated || {};
   debug('reyhdrating from %o', dehydrated);
   return hg.state({
+    // Router options are never rehydrated from stored state, the router will
+    // only pay attention to default values and what is in the window.location
+    // APIs. This prevents user confusion when the stored route doesn't match
+    // location.href.
     router: router.state({ routes: routes }),
     deviceSets: deviceSets.state(dehydrated.deviceSets),
   });
@@ -48,10 +48,30 @@ domready(function ondomready() {
   var stored = stash('state');
   var atom = state(stored);
 
-  atom(function change(value) {
-    debug('storing: %o', value);
-    stash('state', value);
-  });
+  // HACK(jasoncampbell): When the initial route is for a device-set it's PDF
+  // file should be shown. Loading a PDF file into the PDF.js renderer is a
+  // mutlistep process and to make matters more complicated, due to thier size
+  // PDF blobs are stored via a different mechanism than the simple state stash
+  // (SEE: ./dom/blob-store.js).
+  //
+  // Check if the current route is routes.SHOW.
+  if (atom.router.route() === routes.SHOW) {
+    // Retrieve the current device-set.
+    var params = atom.router.params();
+    var ds = atom.deviceSets.collection.get(params.id);
+    // Listen for changes to the underlying Blob. At some point after
+    // initialization it might be retreived from either a local store or
+    // Syncbase and set, the watch function below will change anytime the value
+    // is updated.
+    var remove = ds.file.blob(function blobchange(blob) {
+      // If the Blob object is set then load it so that it can be rendered.
+      if (blob instanceof window.Blob) {
+        deviceSet.channels.load(ds);
+        // The initial work is done, this listener can be removed.
+        remove();
+      }
+    });
+  }
 
   // // Top level state.
   // var state = hg.state({
@@ -107,8 +127,12 @@ domready(function ondomready() {
 });
 
 function render(state) {
+  // Save the state for later, this is a quick way to limit localStorage writes
+  // to the same RAF as the main render function.
+  stash('state', state);
   debug('render: %o', state);
   insert(css);
+
 
   var children = [];
 

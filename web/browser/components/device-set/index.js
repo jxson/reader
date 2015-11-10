@@ -18,7 +18,8 @@ module.exports = {
 function state(options, key) {
   options = extend({
     id: key || cuid(),
-    devices: {}
+    devices: {},
+    pages: {}
   }, options);
 
   debug('init: %o', options);
@@ -29,15 +30,19 @@ function state(options, key) {
     file: file.state(options.file),
     pdf: hg.value(null),
     pages: hg.varhash({
-      total: 1,
-      current: 1,
+      total: options.pages.total || 1,
+      current: options.pages.current || 1,
     }),
     progress: hg.value(0),
     devices: hg.varhash(options.devices, device.state),
     channels: {
-      load: load
+      load: load,
+      previous: previous,
+      next: next,
     }
   });
+
+  debug('ATOM: %s', JSON.stringify(atom(), null, 2));
 
   return atom;
 }
@@ -96,12 +101,29 @@ function load(state, data) {
   function success(pdf) {
     pdf.toJSON = _PDFDocumentProxyToJSON;
     state.pdf.set(pdf);
-    state.pages.put('current', 1);
+    state.pages.put('current', state.pages.get('current'));
     state.pages.put('total', pdf.numPages);
   }
 
   function error(err) {
     state.error.set(err);
+  }
+}
+
+function previous(state, data) {
+  // Only advance if it's not the first page.
+  var current = state.pages.get('current');
+  if (current > 1) {
+    state.pages.put('current', current - 1);
+  }
+}
+
+function next(state, data) {
+  // Only advance if it's not the last page.
+  var current = state.pages.get('current');
+  var total = state.pages.get('total');
+  if (current < total) {
+    state.pages.put('current', current + 1);
   }
 }
 

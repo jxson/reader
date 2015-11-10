@@ -1,4 +1,5 @@
 
+var click = require('../../events/click');
 var PDFWidget = require('./pdf-widget');
 var hg = require('mercury');
 var format = require('format');
@@ -11,10 +12,6 @@ module.exports = render;
 
 function render(state, channels) {
   insert(css);
-
-  // debug('=== render ===');
-  // debug(JSON.stringify(state, null, 2));
-  // debug('=== render ===');
 
   return h('.pdf-viewer', [
     hg.partial(progress, state.progress),
@@ -56,12 +53,14 @@ function controls(state, channels) {
         state.pages.current,
         state.pages.total)),
       h('a.previous', {
-        href: '#'
+        href: '#',
+        'ev-click': click(channels.previous)
       }, [
         h('i.material-icons', 'chevron_left'),
       ]),
       h('a.next', {
-        href: '#'
+        href: '#',
+        'ev-click': click(channels.next)
       }, [
         h('i.material-icons', 'chevron_right'),
       ])

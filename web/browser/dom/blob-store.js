@@ -1,8 +1,6 @@
-var debug = require('debug')('reader:put-blob');
-var window = require('global/window');
 var once = require('once');
 var thunky = require('thunky');
-
+var window = require('global/window');
 
 var database = thunky(open);
 
@@ -13,7 +11,6 @@ module.exports = {
 
 // Open, initialize and return an IndexedDB instance.
 function open(callback) {
-  debug('opening database');
   // Use the `indexedDB.open()` factory to get a IDBOpenDBRequest which inherits
   // from IDBRequest. Do the right thing for every event handler.
   //
