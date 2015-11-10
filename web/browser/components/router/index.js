@@ -14,16 +14,13 @@ var source = require('geval/source');
 var window = require('global/window');
 var extend = require('xtend');
 
-var href = hg.value('');
-
 module.exports = {
   state: state
-  // href: href
 };
 
 function state(options) {
   options = extend({ routes: {} }, options);
-  debug('initializing: %o', options);
+  debug('init: %o', options);
 
   var atom = hg.state({
     routes: hg.varhash({}),
@@ -64,9 +61,6 @@ function state(options) {
 }
 
 function match(state, data) {
-  debug('channel: match %s', data.href);
-  debug('STATE: %o', state());
-
   if (state.href() === data.href) {
     debug('no update to href, skipping');
     return;
@@ -95,7 +89,6 @@ function match(state, data) {
     _match = hash.match(route.re);
 
     if (!_match) {
-      debug('NO MATCH BOO: %s - %s', key, hash);
       continue;
     }
 

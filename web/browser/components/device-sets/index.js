@@ -1,9 +1,11 @@
 
+var window = require('global/window');
 var format = require('format');
 var hg = require('mercury');
 var deviceSet = require('../device-set');
 var hg = require('mercury');
 var debug = require('debug')('reader:device-sets');
+var device = require('../device');
 
 module.exports = {
   render: require('./render'),
@@ -21,8 +23,7 @@ function state(options) {
     collection: hg.varhash(options.collection || {}, deviceSet.state),
     channels: {
       add: add,
-      remove: remove,
-      show: show
+      remove: remove
     }
   });
 
@@ -44,17 +45,24 @@ function add(state, data) {
     return state.error.set(err);
   }
 
-  var value = deviceSet.state({
+  var ds = deviceSet.state({
     file: { blob: data.blob }
   });
 
-  state.collection.put(value.id(), value);
+  var d = device.state({
+    type: 'Browser',
+    current: true,
+    arch: window.navigator.platform,
+    screen: {
+      width: window.innerWidth,
+      height: window.innerHeight,
+    }
+  });
+
+  ds.devices.put(d.id(), d);
+  state.collection.put(ds.id(), ds);
 }
 
 function remove(state, data) {
   state.collection.delete(data.id);
-}
-
-function show(state, data) {
-  state.current.set(data.id);
 }

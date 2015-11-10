@@ -10,17 +10,25 @@
   padding-right: var(--gutter);*/
   /*border-top: 1px solid transparent;*/
   flex: 1;
+  display: flex;
+  border: 1px solid magenta;
 }
 
 .pdf-viewer .progress {
-  margin: var(--gutter) auto;
+  display: block;
+  margin: 0;
+  /*margin: var(--gutter) auto;*/
   /* HACK: Header's title line-height + 2x the gutters. */
-  margin-top: calc(20px + (var(--gutter) * 2));
+  /*margin-top: calc(20px + (var(--gutter) * 2));*/
   height: 4px;
-  width: 500px;
+  /*width: 500px;*/
   max-width: 100%;
   position: relative;
   background-color: var(--cyan-600);
+}
+
+.pdf-viewer .progress.hidden {
+  display: none;
 }
 
 .pdf-viewer .progress-bar {
@@ -44,6 +52,10 @@
   box-shadow: var(--drop-shadow);
   z-index: 900;
   display: flex;
+}
+
+.pdf-controls .pdf-controls.hidden {
+  display: none;
 }
 
 .pdf-controls .back {
@@ -74,5 +86,4 @@
 .pdf-canvas {
   /* HACK: Header's title line-height + 2x the gutters. */
   margin-top: calc(20px + (var(--gutter) * 2));
-  box-shadow: var(--drop-shadow);
 }

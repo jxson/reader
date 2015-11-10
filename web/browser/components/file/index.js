@@ -7,6 +7,7 @@ var debug = require('debug')('reader:file');
 var extend = require('xtend');
 var hash = require('./hash-blob');
 var hg = require('mercury');
+var db = require('../../dom/blob-store');
 var window = require('global/window');
 
 module.exports = {
@@ -35,18 +36,56 @@ function state(options, key) {
     type: hg.value(options.type || blob.type),
     blob: hg.value(blob || null),
     hash: hg.value(options.hash || ''),
-    error: hg.value(null)
+    error: hg.value(null),
   });
 
+  // If this file's blob is set, hash it's contents and save it in the local db
+  // for later. This makes reloading the page easier as the blob data will be
+  // available for quick retreival later.
   if (blob instanceof window.Blob) {
-    hash(blob, function onhash(err, digest) {
-      if (err) {
-        return atom.error.set(err);
-      }
-
-      atom.hash.set(digest);
-    });
+    save(atom, { blob: atom.blob() });
+  } else if (atom.hash()) {
+    load(atom, { hash: atom.hash() });
   }
 
   return atom;
+}
+
+function save(state, data) {
+  if (! data.blob) {
+    return;
+  }
+
+  hash(data.blob, onhash);
+
+  function onhash(err, digest) {
+    if (err) {
+      return done(err);
+    }
+
+    state.hash.set(digest);
+    db.put(digest, data.blob, done);
+  }
+
+  function done(err) {
+    if (err) {
+      return state.error.set(err);
+    }
+  }
+}
+
+function load(state, data) {
+  if (! data.hash) {
+    return;
+  }
+
+  db.get(data.hash, onget);
+
+  function onget(err, blob) {
+    if (err) {
+      return state.error.set(err);
+    }
+
+    state.blob.set(blob);
+  }
 }

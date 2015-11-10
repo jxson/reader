@@ -15,7 +15,7 @@ function render(state, channels) {
 
   return h('header', [
     h('a.title', {
-      href: '/'
+      href: '/#!/'
     }, 'PDF Reader')
   ]);
 }
