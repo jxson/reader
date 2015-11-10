@@ -7,7 +7,6 @@
 
 .pdf-viewer {
   flex: 1;
-  display: flex;
 }
 
 .pdf-viewer .progress {

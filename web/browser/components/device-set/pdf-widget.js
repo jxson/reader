@@ -2,6 +2,8 @@
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
 
+var debug = require('debug')('reader:pdf-widget');
+var raf = require('raf');
 var document = require('global/document');
 
 module.exports = PDFWidget;
@@ -46,16 +48,23 @@ PDFWidget.prototype.update = function update(previous, element) {
     }
   }
 
-  var width = device ? device.screen.width : element.width;
+  // Set width to current device width.
+  element.width = device ? device.screen.width : element.width;
+  render(element, state);
+};
 
-  // TODO(jasoncampbell): It would be better to have this operation in a
-  // different place and only have this widget handle the render aspect of the
-  // page.
+var rendering = false;
+function render(element, state) {
+  if (rendering) {
+    raf(render.bind(null, element, state));
+    return;
+  }
+
   rendering = true;
-  pdf.getPage(state.pages.current).then(success, error);
+  state.pdf.getPage(state.pages.current).then(success, error);
 
   function success(page) {
-    var scale = width/page.getViewport(1.0).width;
+    var scale = element.width/page.getViewport(1.0).width;
     var viewport = page.getViewport(scale);
     var context = element.getContext('2d');
 
@@ -65,7 +74,7 @@ PDFWidget.prototype.update = function update(previous, element) {
     page.render({
       canvasContext: context,
       viewport: viewport
-    });
+    }).promise.then(done, done);
   }
 
   function error(err) {
@@ -73,4 +82,8 @@ PDFWidget.prototype.update = function update(previous, element) {
       throw err;
     });
   }
-};
+}
+
+function done() {
+  rendering = false;
+}

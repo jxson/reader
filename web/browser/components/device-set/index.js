@@ -42,8 +42,6 @@ function state(options, key) {
     }
   });
 
-  debug('ATOM: %s', JSON.stringify(atom(), null, 2));
-
   return atom;
 }
 
