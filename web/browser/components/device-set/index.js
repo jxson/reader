@@ -39,6 +39,7 @@ function state(options, key) {
       load: load,
       previous: previous,
       next: next,
+      manage: manage
     }
   });
 
@@ -123,6 +124,10 @@ function next(state, data) {
   if (current < total) {
     state.pages.put('current', current + 1);
   }
+}
+
+function manage(state, data) {
+  debug('manage device set: %s', state.id());
 }
 
 // Prevent circular references when serializing state.

@@ -25,6 +25,8 @@ function render(state, channels) {
 }
 
 function progress(state) {
+  debug('progress: %s', state);
+
   if (state >= 100) {
     return h('.progress.hidden');
   }
