@@ -32,7 +32,7 @@ PDFWidget.prototype.update = function update(previous, element) {
   var state = widget.state;
   var pdf = state.pdf;
 
-  if (!pdf && state.progress < 100) {
+  if (!pdf || state.progress < 100) {
     return;
   }
 

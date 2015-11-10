@@ -65,7 +65,11 @@ function controls(state, channels) {
         h('i.material-icons', 'chevron_right'),
       ])
     ]),
-    h('a.menu', [
+    h('a.menu', {
+      href: '#',
+      'ev-click': click(channels.manage)
+    },
+    [
       h('i.material-icons', 'more_vert'),
     ])
   ]);
