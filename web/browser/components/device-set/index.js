@@ -2,7 +2,6 @@
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
 
-var cuid = require('cuid');
 var debug = require('debug')('reader:device-set');
 var device = require('../device');
 var extend = require('xtend');
@@ -11,6 +10,7 @@ var hg = require('mercury');
 var modal = require('../modal');
 var read = require('../../dom/read-blob');
 var util = require('../../util');
+var uuid = require('uuid').v4;
 
 module.exports = {
   render: require('./render'),
@@ -22,7 +22,7 @@ module.exports = {
 
 function state(options, key) {
   options = extend({
-    id: key || cuid(),
+    id: key || uuid(),
     devices: {},
     pages: {}
   }, options);
