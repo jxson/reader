@@ -47,9 +47,11 @@ function render(state, vnode) {
   insert(css);
 
   return h('.modal', {
-    className: state.active ? 'active' : 'hidden',
-    'ev-click': click(state.channels.hide)
+    className: state.active ? 'active' : 'hidden'
   }, [
+    h('.modal-blocker', {
+      'ev-click': click(state.channels.hide)
+    }),
     h('.modal-dialog', vnode)
   ]);
 }

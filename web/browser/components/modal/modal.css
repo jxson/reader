@@ -6,8 +6,15 @@
 
 .modal {
   visibility: visible;
+}
+
+.modal.hidden {
+  visibility: hidden;
+}
+
+.modal-blocker {
   position: fixed;
-  z-index: 999;
+  z-index: 888;
   width: 100%;
   height: 100%;
   top: 0;
@@ -17,12 +24,9 @@
   background-color: rgba(0, 0, 0, 0.24);
 }
 
-.modal.hidden {
-  visibility: hidden;
-}
-
 .modal-dialog {
   position: absolute;
+  z-index: 999;
   /* HACK: Header's title line-height + 2x the gutters. */
   top: calc(20px + (var(--gutter) * 3));
   right: 0;
