@@ -15,7 +15,6 @@ var insert = require('insert-css');
 var managerCSS = require('./manager.css');
 var modal = require('../modal');
 var PDFWidget = require('./pdf-widget');
-var util = require('../../util');
 
 module.exports = render;
 
@@ -90,6 +89,7 @@ function manager(state, channels) {
   // Else show the remote control manager.
   insert(managerCSS);
 
+  // TODO(jasoncampbell): Refactor so that re-indexing is not required.
   // Use a single loop to create each linked, and unlinked vnode children arrays
   // which are sorted in the correct order.
   var linked = [];
