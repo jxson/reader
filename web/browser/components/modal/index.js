@@ -40,7 +40,6 @@ function hide(state, data) {
 }
 
 function render(state, vnode) {
-  // assert.ok(vnode instanceof VNode)
   assert.equal(vnode.constructor.name,
     'VirtualNode',
     'The second argument must be a VirtualNode.');

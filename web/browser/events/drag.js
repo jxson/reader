@@ -35,10 +35,10 @@ module.exports = BaseEvent(handleDrag); // jshint ignore:line
 //
 // Additionally, on the dragstart event any passed in data will be JSON encoded
 // and attached to the native event's dataTransfer object. This enables it's
-// retreival from the drop DOM event (handled by `./events/drop`).
+// retrieval from the drop DOM event (handled by `./events/drop`).
 //
 // NOTE: Currently this handle does not broadcast on high-frequency drag events,
-// the nesecary code has been stubbed out below for easy modification in the
+// the necessary code has been stubbed out below for easy modification in the
 // future.
 function handleDrag(ev, broadcast) {
   // Only handle mousedown events, allows usage of ev-events for simplicity.
