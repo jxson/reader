@@ -63,9 +63,12 @@ clean:
 	@$(RM) -fr browser/vanadium/vdl
 
 .PHONY:
-lint: node_modules
+dependency-check:
 	@dependency-check package.json --entry browser/main.js
 	@dependency-check package.json --entry browser/main.js --unused --no-dev
+
+.PHONY:
+lint: node_modules
 	@jshint .
 
 .PHONY:
