@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style
 // license that can be found in the LICENSE file.
 
+var format = require('format');
 var document = require('global/document');
 var domready = require('domready');
 var struct = require('observ-struct');
@@ -21,19 +22,53 @@ var atom = struct({
   }),
   scale: value(1),
   progress: value(0),
+  canvas: struct({
+    ratio: value(window.devicePixelRatio || 1),
+    element: value(null),
+    context: value(null),
+    height: value(0),
+  })
+
 });
 
 window.atom = atom;
 
-// Global cache of the canvas element.
-var canvas = null;
+// Allow debugging in a normal browser.
+window.android = window.android || {
+  setPageCount: noop
+};
 
 domready(function ondomready() {
   debug('domready');
 
   // Initial DOM Node setup.
-  canvas = document.createElement('canvas');
+  var canvas = document.createElement('canvas');
   canvas.setAttribute('class','pdf-canvas');
+  // https://coderwall.com/p/vmkk6a/how-to-make-the-canvas-not-look-like-crap-on-retina
+  // To manage high density screens the canvas size needs to be multiplied by
+  canvas.width = window.innerWidth * atom.canvas.ratio();
+  canvas.style.width = window.innerWidth + 'px';
+  atom.canvas.element.set(canvas);
+  // PREVENT REFLOWS NY ONLY SETTING HEIGHT ON THE FIRST PDF PAGE RENDER< OR
+  // IF IT CHANGED.
+  atom.canvas.height(function heightchange(height) {
+    debug('height change: %s', height);
+    var el = atom.canvas.element();
+    var h = height * atom.canvas.ratio();
+    el.height = h;
+
+    if (atom.canvas.ratio() > 1) {
+      el.style.height = h + 'px';
+    }
+
+    // canvas.height = viewport.height * ratio;
+    // canvas.style.height = window.innerHeight + 'px';
+  });
+
+  var context = canvas.getContext('2d');
+  context.scale(2, 2);
+  atom.canvas.context.set(context);
+
   document.body.style.margin = '0px';
   document.body.style.padding = '0px';
   document.body.appendChild(canvas);
@@ -78,16 +113,17 @@ domready(function ondomready() {
   // updates renders should be queued in a raf.
   atom.pdf.page(function pagechange(page) {
     debug('rendering page');
-    var ratio = window.devicePixelRatio || 1.0;
-    // TODO(jasoncampbell): Use state set scale instead of defaulting to 1.0.
-    var scale = window.innerWidth/page.getViewport(ratio).width;
+
+    var width = page.getViewport(1).width;
+    var scale = window.innerWidth / width;
     var viewport = page.getViewport(scale);
 
-    canvas.height = viewport.height;
-    canvas.width = viewport.width;
+    if (atom.canvas.height() !== viewport.height) {
+      atom.canvas.height.set(viewport.height);
+    }
 
     page.render({
-      canvasContext: canvas.getContext('2d'),
+      canvasContext: atom.canvas.context(),
       viewport: viewport
     }).promise.then(noop, error);
   });
@@ -129,6 +165,10 @@ function debug(template, args) {
     return;
   }
 
+  // The logging in Android Studio only shows the template string when calling
+  // console.log directly, pre-fromatting allows the logs to show the correct
+  // information.
   template = 'pdf-viewer: ' + template;
-  console.log.apply(console, arguments);
+  var message = format.apply(null, arguments);
+  console.log(message);
 }
