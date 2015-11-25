@@ -9,7 +9,7 @@ var id = null;
 
 module.exports = queue;
 
-// Queue asyncronous workers to fire on the next available animation frame.
+// Queue asynchronous workers to fire on the next available animation frame.
 function queue(job) {
   jobs.push(job);
 

@@ -81,7 +81,7 @@ function open(state, data) {
   }
 
   function progress(update) {
-    // Some servers or siruations might not return the content-length header
+    // Some servers or situations might not return the content-length header
     // which is proxied to update.total. Skip updating the progress if this
     // value is not set.
     if (!update.total) {

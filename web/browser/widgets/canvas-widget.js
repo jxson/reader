@@ -73,7 +73,7 @@ CanvasWidget.prototype.update = function(previous, element) {
   var state = widget.state;
   var context = element.getContext('2d');
 
-  // In order to render appropriately on retina devices it is imporant to
+  // In order to render appropriately on retina devices it is important to
   // increase the size the the canvas element by the `window.devicePixelRatio`
   // and then shrink the element back down to normal size with CSS. This will
   // sharpen the image rendered by the canvas but decrease the rendered size. To
@@ -84,7 +84,7 @@ CanvasWidget.prototype.update = function(previous, element) {
   //
   // NOTE: This is done on update, which fires for every render call instead of
   // in widget.init(), which will fire only when the element is first created
-  // and insterted into the DOM. Allowing this resizing to happen in the render
+  // and inserted into the DOM. Allowing this resizing to happen in the render
   // loop makes it possible to handle resize events and update anytime the state
   // values are updated.
   element.width = Math.floor(state.width * state.ratio);
