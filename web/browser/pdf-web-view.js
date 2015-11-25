@@ -29,10 +29,10 @@ domready(function ondomready() {
 
   window.atom = atom;
   window.client = {
-    open: function(href) {
+    open: function openPDF(href) {
       open(atom, { href: href });
     },
-    page: function(number) {
+    page: function pagePDF(number) {
       page(atom, { number: number });
     }
   };
