@@ -486,7 +486,7 @@ public class PdfViewerActivity extends BaseReaderActivity {
         }
     }
 
-    private static void handleException(Exception e) {
+    protected static void handleException(Exception e) {
         Log.e(TAG, e.getMessage(), e);
     }
 
