@@ -138,7 +138,7 @@ public class GestureListener implements GestureDetector.OnGestureListener,
         send("ScaleEnd");
     }
 
-    protected static void handleException(Exception e) {
+    private static void handleException(Exception e) {
         Log.e(TAG, e.getMessage(), e);
     }
 }
