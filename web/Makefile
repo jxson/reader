@@ -49,6 +49,8 @@ public/pdf-web-view.js: browser/pdf-web-view.js $(js_files) node_modules
 .PHONY:
 distclean: clean
 	@$(RM) -fr node_modules
+	@$(RM) -f bin/principal
+	@$(RM) -f bin/syncbased
 	@jiri goext distclean
 
 .PHONY:
@@ -57,8 +59,6 @@ clean:
 	@$(RM) -fr public/bundle.js
 	@$(RM) -fr tmp
 	@$(RM) -fr credentials
-	@$(RM) -f bin/principal
-	@$(RM) -f bin/syncbased
 	@$(RM) -fr browser/vanadium/v.io
 	@$(RM) -fr browser/vanadium/vdl
 

@@ -11,6 +11,7 @@ web/npm-debug.log
 web/public/bundle.*
 web/tmp
 web/public/pdf-web-view.js
+web/public/*.pdf
 
 # VDL generated stubs should be ignored
 web/browser/vanadium/v.io/*

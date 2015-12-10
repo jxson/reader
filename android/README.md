@@ -44,6 +44,7 @@ there needs to be a cloud Syncbase instance running, which hosts the Syncgroup f
 
 To run the cloudsync instance, run the following command from the `reader/web` directory:
 
-    make cloudsync
+    make -C `git rev-parse --show-toplevel`/web clean cloudsync
+
 
 
