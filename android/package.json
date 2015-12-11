@@ -1,0 +1,26 @@
+{
+  "name": "android",
+  "version": "1.0.0",
+  "description": "An example multi-device PDF reader app for Android platform, built using Vanadium.",
+  "main": "index.js",
+  "directories": {
+    "test": "test"
+  },
+  "dependencies": {
+    "appium": "^1.4.16",
+    "debug": "^2.2.0",
+    "getport": "^0.1.0",
+    "ms": "^0.7.1",
+    "run-series": "^1.1.4",
+    "run-waterfall": "^1.1.3",
+    "tape": "^4.2.2",
+    "verror": "^1.6.0",
+    "wd": "^0.4.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC"
+}

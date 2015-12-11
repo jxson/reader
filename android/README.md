@@ -46,5 +46,22 @@ To run the cloudsync instance, run the following command from the `reader/web` d
 
     make -C `git rev-parse --show-toplevel`/web clean cloudsync
 
+# Testing
+
+There is an automated UI testing ability enabled by Appium which is a work in progress. To run the tests you will need to run an Appium server, the `cloudsync` syncbase instance, and then the test. In the future this may be simplified so that a single CLI task can manage all the test dependencies.
+
+First you will need to install all the dependencies, the default make task will handle this (it might take a minute or so):
+
+    make
+
+Next you should build the APK for this application, this can be done via Android studio or with Gradle via the Makefile:
+
+    make apk
+
+Once the dependencies are in order you will need to plug in an Android device and get it's unique device id using adb:
+
+    adb devices -l
 
 
+
+[Appium]: http://appium.io/
