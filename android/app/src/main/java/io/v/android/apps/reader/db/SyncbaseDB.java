@@ -45,6 +45,7 @@ import io.v.v23.Options;
 import io.v.v23.VIterable;
 import io.v.v23.context.CancelableVContext;
 import io.v.v23.context.VContext;
+import io.v.v23.namespace.Namespace;
 import io.v.v23.rpc.Server;
 import io.v.v23.security.BlessingPattern;
 import io.v.v23.security.Blessings;
@@ -85,13 +86,9 @@ public class SyncbaseDB implements DB {
 
     private static final String TAG = SyncbaseDB.class.getSimpleName();
 
-    /**
-     * The intent result code for when we get blessings from the account manager.
-     * The value must not conflict with any other blessing result codes.
-     */
-    private static final int BLESSING_REQUEST = 200;
+    // TODO(youngseokyoon): change this back to the domain name, once the dns issue is resolved.
+    private static final String GLOBAL_MOUNT_TABLE = "/104.197.5.136:8101";
 
-    private static final String GLOBAL_MOUNT_TABLE = "/ns.dev.v.io:8101";
     private static final String SYNCBASE_APP = "reader";
     private static final String SYNCBASE_DB = "db";
     private static final String TABLE_FILES = "files";
@@ -133,6 +130,14 @@ public class SyncbaseDB implements DB {
                 } else {
                     mVContext = V.init(mContext);
                 }
+            }
+
+            // TODO(youngseokyoon): take this code out, once the dns issue is resolved.
+            try {
+                Namespace n = V.getNamespace(mVContext);
+                n.setRoots(ImmutableList.of("/104.197.5.136:8101"));
+            } catch (VException e) {
+                handleError("Could not change the global mount table address: " + e.getMessage());
             }
 
             try {
@@ -179,12 +184,13 @@ public class SyncbaseDB implements DB {
 
     private void refreshBlessings(Activity activity) {
         Intent intent = BlessingService.newBlessingIntent(mContext);
-        activity.startActivityForResult(intent, BLESSING_REQUEST);
+        activity.startActivityForResult(intent,
+                io.v.android.apps.reader.Constants.REQUEST_CODE_SEEK_BLESSINGS);
     }
 
     @Override
     public boolean onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == BLESSING_REQUEST) {
+        if (requestCode == io.v.android.apps.reader.Constants.REQUEST_CODE_SEEK_BLESSINGS) {
             try {
                 byte[] blessingsVom = BlessingService.extractBlessingReply(resultCode, data);
                 Blessings blessings = (Blessings) VomUtil.decode(blessingsVom, Blessings.class);
