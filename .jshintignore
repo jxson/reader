@@ -1,5 +1,5 @@
-node_modules
-public/*.js
-coverage
-browser/vanadium/vdl/*
-browser/vanadium/v.io/*
+*/node_modules
+web/public/*.js
+web/coverage
+web/browser/vanadium/vdl/*
+web/browser/vanadium/v.io/*
