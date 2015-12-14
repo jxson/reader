@@ -1,16 +1,15 @@
 
 var configure = require('./configure');
-var debug = require('debug')('setup');
 
 module.exports = setup;
 
 function setup(fn) {
-  debug('initializing');
+  // debug('initializing');
 
   return test;
 
   function test(t) {
-    debug('running');
+    // debug('running');
 
     configure(function(err, config) {
       if (err) {
@@ -19,7 +18,7 @@ function setup(fn) {
         return;
       }
 
-      debug('config %o', config);
+      // debug('config %o', config);
     });
   }
 }

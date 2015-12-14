@@ -1,27 +1,21 @@
+// Copyright 2015 The Vanadium Authors. All rights reserved.
+// Use of this source code is governed by a BSD-style
+// license that can be found in the LICENSE file.
+
 var test = require('tape');
-var wd = require('wd');
-var config = require('./config');
-var debug = require('debug')('simple-test');
-var path = require('path');
+var remote = require('./helpers/remote');
+var debug = require('debug')('test');
 var ms = require('ms');
 var waterfall = require('run-waterfall');
-
-
-// NOTE: install the account manager app as part of the test
-// http://appium.io/slate/en/master/?javascript#current-context
-// Activity switching:
-// https://discuss.appium.io/t/how-to-maintain-context-switching-between-two-activity/4864/8
-// https://discuss.appium.io/t/the-new-start-activity-feature-in-appium-1-2-3/396
-// NOTE: between runs the blessing chooser activity needs to be closed
+var extend = require('xtend');
 
 test('simple', function(t) {
-  var driver = wd.remote({
-    host: 'localhost',
-    port: 4723
-  });
+  var driver = remote();
 
+  // Hook into the test's end event to shutdown the driver session.
   t.on('end', function end() {
     debug('test ending, closing driver');
+
     driver.quit(function onclose(err) {
       if (err) {
         debug('error: %o', err);
@@ -30,11 +24,9 @@ test('simple', function(t) {
     });
   });
 
-  log(driver);
-
   var tasks = [
     init,
-    wait(ms('2m')),
+    wait(ms('12s')),
     getCurrentActivity,
     contexts,
     wait(ms('4s')),
@@ -42,6 +34,7 @@ test('simple', function(t) {
     wait(ms('12s')),
   ];
 
+  // Run all the tasks above, one after the other.
   waterfall(tasks, function done(err, res) {
     if (err) {
       t.end(err);
@@ -55,17 +48,23 @@ test('simple', function(t) {
   });
 
   function init(callback) {
-    driver.init({
+    var defaults = {
       browserName: '',
       'appium-version': '1.4.13',
       platformName: 'Android',
+    };
+
+    // TODO(jasoncampbell): Support some kind of cinfiguration file for all
+    // these options.
+    var options = extend(defaults, {
       platformVersion: '6.0',
-      // platformVersion: '5.1.1',
-      // adb devices
-      deviceName: '8XV5T15A23006055',
-      // deviceName: 'ZX1G22TXNH',
-      app: path.resolve(__dirname, '../app/build/outputs/apk/app-debug.apk')
-    }, done);
+      deviceName: process.env.DEVICE_ID,
+      app: process.env.APK
+    });
+
+    debug('initializing driver with: %o', options);
+
+    driver.init(options, done);
 
     function done(err) {
       if (err) {
@@ -152,7 +151,9 @@ test('simple', function(t) {
               '.text("Bless")'
             ].join('');
 
-            driver.elementByAndroidUIAutomator(selector, function(err, element) {
+            driver
+              .elementByAndroidUIAutomator(selector, function(err, element) {
+
               if (err) {
                 return callback(err);
               }
@@ -174,32 +175,9 @@ test('simple', function(t) {
   }
 });
 
-function log(driver) {
-  driver.on('status', onstatus);
-  driver.on('command', oncommand);
-  driver.on('http', onhttp);
-
-  function onstatus(info) {
-    debug('wd-status: %s', info);
-  }
-
-  function oncommand(method, path, data) {
-    debug('wd-command: %s "%s" => %o', method, path, data);
-  }
-
-  function onhttp(method, path, data) {
-    debug('wd-http: %s "%s" => %o', method, path, data);
-  }
-}
-
-function worker(fn, param) {
-  return job;
-
-  function job(callback) {
-
-  }
-}
-
+// NOTE: Below is a WIP example of how an API for running a single test which
+// spans multiple devices might work. Ideally the managment of Appium clients,
+// Appium servers, and the cloud instance could be managed by the setup helper.
 var setup = require('./helpers/setup');
 
 test.skip('bless application', setup(function(t, devices) {

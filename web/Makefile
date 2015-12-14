@@ -19,8 +19,13 @@ syncbase_port ?= 4000
 cloudsync_port ?= 8000
 id ?= $(shell if test -e tmp/id; then cat tmp/id; else PATH=$(PATH) bin/uuid; fi)
 
+.PHONY:
 all: public/bundle.js public/pdf-web-view.js
 	@true  # silences watch
+
+.PHONY:
+bin: bin/principal bin/syncbased
+	@true
 
 .DELETE_ON_ERROR:
 node_modules: package.json
