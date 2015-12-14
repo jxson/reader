@@ -60,7 +60,6 @@ This will install the following testing dependencies:
 
 * Any testing dependencies declared in the `package.json` (Appium, tape, etc.).
 * Vanadium dependencies for the `syncbased` and `principal` commands.
-* The Vanadium account manager APK.
 
 Next you should build the APK for the reader application, this can be done via Android studio or with Gradle via the Makefile:
 
@@ -76,7 +75,7 @@ Appium uses the a client/server architecture similar to Selenuim (in fact the cl
 
 To run the Appium server:
 
-    device-id=<device-id> make appium-server
+    udid=<device-id> make appium-server
 
 The reader app needs a cloud available peer to synchronize with, to provide this run the `cloudsync` Syncbase instance with the blessings of the same user who owns the Android device.
 

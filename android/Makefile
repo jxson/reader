@@ -11,7 +11,7 @@ VDLPATH := $(JIRI_ROOT)/release/go/src:$(shell cd ../common; pwd)
 
 port ?= 4723
 udid ?= ${DEVICE_ID}
-log-level ?= debug
+log-level ?= warn
 
 .PHONY:
 all: bin node_modules
@@ -22,6 +22,10 @@ bin:
 	$(MAKE) -C ../web bin
 
 # TODO(jasoncampbell): Add a task for building the account manager APK.
+
+.PHONY:
+distclean:
+	@$(RM) -fr node_modules
 
 .PHONY:
 clean:
