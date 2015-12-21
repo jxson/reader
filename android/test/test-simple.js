@@ -112,7 +112,7 @@ test('simple', function(t) {
     var selector = [
       'new UiSelector()',
       '.className("android.widget.CheckedTextView")',
-      '.text("io.v.android.apps.account_manager/")'
+      '.index(0)'
     ].join('');
 
     driver.elementByAndroidUIAutomator(selector, function(err, element) {
@@ -148,7 +148,7 @@ test('simple', function(t) {
             var selector = [
               'new UiSelector()',
               '.className("android.widget.Button")',
-              '.text("Bless")'
+              '.text("Allow")'
             ].join('');
 
             driver
