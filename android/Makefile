@@ -45,12 +45,7 @@ app/build/outputs/apk/app-debug.apk:
 
 .PHONY:
 appium-server: node_modules apk
-	appium \
-		--port $(port) \
-		--app $(realpath app/build/outputs/apk/app-debug.apk) \
-		--udid $(udid) \
-		--log-level $(log-level) \
-		--key-password 1234 \
+	appium --port $(port) --log-level $(log-level)
 
 .PHONY:
 test-integration: all

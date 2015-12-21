@@ -26,12 +26,11 @@ test('simple', function(t) {
 
   var tasks = [
     init,
-    wait(ms('12s')),
+    wait(ms('4s')),
     getCurrentActivity,
     contexts,
     wait(ms('4s')),
-    selectBlessing,
-    wait(ms('12s')),
+    selectBlessing
   ];
 
   // Run all the tasks above, one after the other.

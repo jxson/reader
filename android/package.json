@@ -8,7 +8,7 @@
     "test": "test"
   },
   "dependencies": {
-    "appium": "^1.4.16",
+    "appium": "^1.5.0-beta9",
     "debug": "^2.2.0",
     "getport": "^0.1.0",
     "ms": "^0.7.1",

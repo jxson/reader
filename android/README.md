@@ -42,13 +42,17 @@ When you want to force update the dependencis, add `--refresh-dependencies` para
 To make the synchronization work properly,
 there needs to be a cloud Syncbase instance running, which hosts the Syncgroup for the Reader app.
 
-To run the cloudsync instance, run the following command from the `reader/web` directory:
+To run the cloudsync instance, run the following command from this directory:
 
     make -C `git rev-parse --show-toplevel`/web clean cloudsync
 
 # Testing
 
 There is an automated UI testing ability enabled by Appium which is a work in progress. To run the tests you will need to run an Appium server, the `cloudsync` syncbase instance, and then the test. In the future this may be simplified so that a single CLI task can manage all the test dependencies.
+
+Be sure to set the `$ANDROID_HOME` env var with:
+
+    export ANDROID_HOME=<pathname>/Android/sdk/
 
 ## Setup
 
