@@ -6,9 +6,11 @@ SHELL := /bin/bash
 .SUFFIXES:
 
 .PHONY:
-all: packages
+all: dependencies
 	@true # silences watch
 
-packages: pubspec.yaml flutter.yaml
+.PHONY:
+dependencies: .packages
+
+.packages: pubspec.yaml
 	pub get
-	@touch $@
