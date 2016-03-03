@@ -5,12 +5,25 @@ SHELL := /bin/bash
 .DEFAULT_GOAL := all
 .SUFFIXES:
 
-.PHONY:
-all: dependencies
+.PHONY: all
+all: .packages doc
 	@true # silences watch
-
-.PHONY:
-dependencies: .packages
 
 .packages: pubspec.yaml
 	pub get
+
+.PHONY: upgrade
+upgrade:
+	pub upgrade
+
+.PHONY: analyze
+analyze:
+	dartanalyzer lib/main.dart
+
+.PHONY: fmt
+fmt: packages
+	dartfmt --overwrite lib
+
+doc:
+	dartdoc
+	@touch $@
