@@ -27,3 +27,7 @@ fmt: packages
 doc:
 	dartdoc
 	@touch $@
+
+.PHONY: upgrade
+test:
+	flutter test --engine-src-path ~/Code/engine/src
