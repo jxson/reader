@@ -28,6 +28,6 @@ doc:
 	dartdoc
 	@touch $@
 
-.PHONY: upgrade
+.PHONY: test
 test:
 	flutter test --engine-src-path ~/Code/engine/src
