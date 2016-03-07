@@ -1,4 +1,5 @@
 import "package:test/test.dart";
+import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:reader/components/flutter_demo.dart';
@@ -6,25 +7,18 @@ import 'package:reader/components/flutter_demo.dart';
 void main() {
   test("Example widget test", () {
     testWidgets((WidgetTester tester) {
-      GlobalKey demo = new GlobalKey();
-      Widget widget = new FlutterDemo(key: demo);
+      GlobalKey key = new GlobalKey();
+      tester.pumpWidget(new MaterialApp(
+          title: 'Flutter Demo',
+          routes: <String, RouteBuilder>{
+            '/': (RouteArguments args) => new FlutterDemo(key: key)
+          }));
 
-      tester.pumpWidget(widget);
+      expect("Foo", equals("Foo"));
 
-      expect(tester.findText("Flutter Demo"), isNotNull);
-      // expect(demo.currentState._counter, 0);
-
-      // 'Button tapped $_counter time${ _counter == 1 ? '' : 's' }.'))
+      // tester.pump();
+      //
+      // expect(tester.findText("Flutter Demo"), isNotNull);
     });
   });
 }
-
-
-// class _FlutterDemoState extends State<FlutterDemo> {
-//   int _counter = 0;
-//
-//   void _incrementCounter() {
-//     setState(() {
-//       _counter++;
-//     });
-//   }
