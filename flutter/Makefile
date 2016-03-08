@@ -18,7 +18,8 @@ upgrade:
 
 .PHONY: analyze
 analyze:
-	dartanalyzer lib/main.dart
+	@echo "=== Analyzing Dart code ==="
+	dartanalyzer lib/main.dart --lints --fatal-hints --fatal-warnings
 
 .PHONY: fmt
 fmt: packages
@@ -29,5 +30,6 @@ doc:
 	@touch $@
 
 .PHONY: test
-test:
+test: analyze
+	@echo "=== Running tests ==="
 	flutter test --engine-src-path ~/Code/engine/src
