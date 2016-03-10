@@ -35,4 +35,4 @@ doc:
 .PHONY: test
 test: analyze
 	@echo "=== Running tests ==="
-	flutter test --engine-src-path $(FLUTTER_ENGINE)
+	flutter test --engine-src-path $(FLUTTER_ENGINE)/src

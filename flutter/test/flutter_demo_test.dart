@@ -17,13 +17,6 @@ void main() {
           routes: <String, RouteBuilder>{
             '/': (RouteArguments args) => new FlutterDemo(key: key)
           }));
-      // NOTE: There is an animation segue for the floating action button in
-      // the material scaffold. The FAB is not tappable during this initial
-      // segue, the FAb will not be responsive to tapping until the animation
-      // ends at 400ms.
-      //
-      // SEE: https://git.io/vaLPb
-      tester.pump(new Duration(milliseconds: 400));
 
       // Test State.
       StatefulComponentElement element = tester.findElementByKey(key);
@@ -33,10 +26,19 @@ void main() {
       expect(tester.findText("Button tapped 0 times."), isNotNull);
 
       state.incrementCounter();
+      // Advance the flutter framework to the next tick.
       tester.pump();
 
       expect(state.counter, equals(1));
       expect(tester.findText("Button tapped 1 time."), isNotNull);
+
+      // NOTE: There is an animation segue for the floating action button in
+      // the material scaffold. The FAB is not tappable during this initial
+      // segue, the FAB will not be responsive to tapping until the animation
+      // ends at 400ms.
+      //
+      // SEE: https://git.io/vaLPb
+      tester.pump(new Duration(milliseconds: 400));
 
       // Test Widget input and rendering.
       StatefulComponentElement fab = tester.findElement((Element element) {
