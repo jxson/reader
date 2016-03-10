@@ -15,8 +15,8 @@ void main() {
           }));
       // NOTE: There is an animation segue for the floating action button in
       // the material scaffold. The FAB is not tappable during this initial
-      // segue so 400ms is required for the end of the animation making the
-      // FAb responsive to tapping.
+      // segue, the FAb will not be responsive to tapping until the animation
+      // ends at 400ms.
       //
       // SEE: https://git.io/vaLPb
       tester.pump(new Duration(milliseconds: 400));

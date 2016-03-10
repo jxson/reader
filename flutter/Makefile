@@ -29,6 +29,7 @@ doc:
 	dartdoc
 	@touch $@
 
+# TODO(jasoncampbell): this task needs to use the jiri profile for flutter.
 .PHONY: test
 test: analyze
 	@echo "=== Running tests ==="
