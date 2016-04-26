@@ -5,27 +5,31 @@ SHELL := /bin/bash
 .DEFAULT_GOAL := all
 .SUFFIXES:
 
+
+PATH := deps/flutter/bin:$(PATH)
+PATH := deps/flutter/cache/dart-sdk/bin:$(PATH)
+
 .PHONY: all
 all: .packages doc
 	@true # silences watch
 
-.packages: pubspec.yaml
+.packages: pubspec.yaml deps/flutter
 	pub get
 
 .PHONY: upgrade
-upgrade:
+upgrade: deps/flutter
 	pub upgrade
 
 .PHONY: analyze
-analyze:
+analyze: deps/flutter
 	@echo "=== Analyzing Dart code ==="
 	dartanalyzer lib/main.dart --lints --fatal-hints --fatal-warnings
 
 .PHONY: fmt
-fmt: packages
+fmt: packages deps/flutter
 	dartfmt --overwrite lib
 
-doc:
+doc: deps/flutter
 	dartdoc
 	@touch $@
 
@@ -33,6 +37,11 @@ doc:
 # NOTE: $FLUTTER_ENGINE is automatically picked up by flutter but is explcitly
 # set here for calrity until the correct path can be set using a jiri profile.
 .PHONY: test
-test: analyze
+test: analyze deps/flutter
 	@echo "=== Running tests ==="
-	flutter test --engine-src-path $(FLUTTER_ENGINE)/src
+	flutter test
+
+deps/flutter:
+	git clone https://github.com/flutter/flutter.git -b alpha $@
+	pub get
+	@touch $@
