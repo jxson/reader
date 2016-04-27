@@ -7,11 +7,11 @@ SHELL := /bin/bash
 
 DIRNAME := $(shell dirname $(realpath $(lastword $(MAKEFILE_LIST))))
 FLUTTER_BIN := $(DIRNAME)/deps/flutter/bin
-DART_BIN := $(DIRNAME)/deps/flutter/cache/dart-sdk/bin
+DART_BIN := $(FLUTTER_BIN)/cache/dart-sdk/bin
 PATH := $(FLUTTER_BIN):$(DART_BIN):$(PATH)
 
 .PHONY: all
-all: .packages doc
+all: .packages
 	@true # silences watch
 
 .packages: pubspec.yaml deps/flutter
@@ -23,9 +23,10 @@ upgrade: deps/flutter
 
 .PHONY: analyze
 analyze: deps/flutter
-	@echo "=== Analyzing Dart code ==="
-	# dartanalyzer lib/main.dart --lints --fatal-hints --fatal-warnings
-	@true
+	@echo "=== Analyzing application code ==="
+	dartanalyzer lib/main.dart --lints --fatal-hints --fatal-warnings
+	@echo "=== Analyzing test code ==="
+	dartanalyzer $(shell find test -name "*.dart") --lints --fatal-hints --fatal-warnings
 
 .PHONY: fmt
 fmt: packages deps/flutter
@@ -41,7 +42,18 @@ doc: deps/flutter
 .PHONY: test
 test: analyze deps/flutter
 	@echo "=== Running tests ==="
-	flutter test
+	# pub run test works, flutter test timesout in a docker image
+	# pub run test test/widget/flutter_demo_test.dart
+	flutter test test/widget/flutter_demo_test.dart
+
+distclean:
+	@rm -rf $(shell find . -name "packages")
+	@rm -rf deps
+	@rm -rf .packages
+	@rm -rf pubspec.lock
+	@rm -rf deps
+
+deps: deps/flutter
 
 deps/flutter:
 	@echo $(PATH)
