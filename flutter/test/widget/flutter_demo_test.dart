@@ -46,6 +46,9 @@ void main() {
 
       expect(state.counter, equals(2));
       expect(tester, hasWidget(find.text("Button tapped 2 times.")));
+
+      // Wait for animations to end.
+      tester.pump(const Duration(seconds: 1));
     });
   });
 }
