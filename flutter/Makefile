@@ -11,7 +11,7 @@ DART_BIN := $(FLUTTER_BIN)/cache/dart-sdk/bin
 PATH := $(FLUTTER_BIN):$(DART_BIN):$(PATH)
 
 .PHONY: all
-all: .packages
+all: .packages deps
 	@true # silences watch
 
 .packages: pubspec.yaml deps/flutter
@@ -32,7 +32,7 @@ analyze: deps/flutter
 fmt: packages deps/flutter
 	dartfmt --overwrite lib
 
-doc: deps/flutter
+doc: deps/flutter $(shell find lib/ -name "*.dart")
 	dartdoc
 	@touch $@
 
@@ -42,16 +42,14 @@ doc: deps/flutter
 .PHONY: test
 test: analyze deps/flutter
 	@echo "=== Running tests ==="
-	# pub run test works, flutter test timesout in a docker image
-	# pub run test test/widget/flutter_demo_test.dart
+	flutter test test/unit/example_test.dart
 	flutter test test/widget/flutter_demo_test.dart
 
-distclean:
+depclean:
 	@rm -rf $(shell find . -name "packages")
 	@rm -rf deps
 	@rm -rf .packages
 	@rm -rf pubspec.lock
-	@rm -rf deps
 
 deps: deps/flutter
 
