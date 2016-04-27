@@ -42,6 +42,7 @@ void main() {
       expect(tester, hasWidget(fab));
 
       tester.tap(fab);
+      tester.pump();
 
       expect(state.counter, equals(2));
       expect(tester, hasWidget(find.text("Button tapped 2 times.")));
