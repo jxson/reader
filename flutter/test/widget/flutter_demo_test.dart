@@ -28,7 +28,7 @@ void main() {
       tester.pump();
 
       expect(state.counter, equals(1));
-      expect(tester, hasWidget(find.text("Button tapped 1 times.")));
+      expect(tester, hasWidget(find.text("Button tapped 1 time.")));
 
       // NOTE: There is an animation segue for the floating action button in
       // the material scaffold. The FAB is not tappable during this initial
