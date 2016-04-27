@@ -30,12 +30,12 @@ void main() {
       expect(state.counter, equals(1));
       expect(tester, hasWidget(find.text("Button tapped 1 times.")));
 
-      NOTE: There is an animation segue for the floating action button in
-      the material scaffold. The FAB is not tappable during this initial
-      segue, the FAB will not be responsive to tapping until the animation
-      ends at 400ms.
-
-      SEE: https://git.io/vwrlS
+      // NOTE: There is an animation segue for the floating action button in
+      // the material scaffold. The FAB is not tappable during this initial
+      // segue, the FAB will not be responsive to tapping until the animation
+      // ends at 400ms.
+      //
+      // SEE: https://git.io/vwrlS
       tester.pump(new Duration(milliseconds: 400));
 
       Finder fab = find.byType(FloatingActionButton);
