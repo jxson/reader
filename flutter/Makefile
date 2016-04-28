@@ -45,6 +45,7 @@ test: analyze deps/flutter
 	flutter test test/unit/example_test.dart
 	flutter test test/widget/flutter_demo_test.dart
 
+.PHONY: depclean
 depclean:
 	@rm -rf $(shell find . -name "packages")
 	@rm -rf deps
@@ -54,8 +55,8 @@ depclean:
 deps: deps/flutter
 
 deps/flutter:
-	@echo $(PATH)
 	git clone https://github.com/flutter/flutter.git -b alpha $@
+	cd $@ && git checkout $(shell echo -e `cat FLUTTER_VERSION`)
 	flutter doctor
 	pub get
 	@touch $@
